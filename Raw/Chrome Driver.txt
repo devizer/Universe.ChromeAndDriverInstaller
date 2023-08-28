@@ -1,0 +1,11 @@
+Legacy: https://chromedriver.storage.googleapis.com/index.html
+   xml: https://chromedriver.storage.googleapis.com
+
+   https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_mac64_m1.zip
+   https://chromedriver.storage.googleapis.com/93.0.4577.63/chromedriver_mac64.zip
+
+Actual:  https://github.com/GoogleChromeLabs/chrome-for-testing#json-api-endpoints
+https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json
+(chromedriver: 115+, chrome: 113+)
+
+

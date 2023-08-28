@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net40;net45;</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Cached/**/*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared-Files\WebDownloader.cs" Link="WebDownloader.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="StaticallyCached\DownloadsMetadata\2023-08-28.json" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;net6.0;netcoreapp3.1;net40;net45;net46;</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <Import Project="..\Shared-Files\NUnit-Platform.props" />
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Universe.ChromeAndDriverInstaller\Universe.ChromeAndDriverInstaller.csproj" />
+    </ItemGroup>
+
+</Project>
