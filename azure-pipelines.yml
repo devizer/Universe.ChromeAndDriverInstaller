@@ -34,6 +34,7 @@ jobs:
        mkdir -p "$RESET_FOLDERS_TO_RAID"; 
        url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
        df -h -T
+       sudo chown $USER /tmp/GCD
     condition: eq(variables['Agent.OS'], 'Linux')
     displayName: 'Raid Compressed: /tmp/GCD'
 
