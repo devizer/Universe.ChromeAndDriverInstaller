@@ -75,6 +75,11 @@ jobs:
       pushd "$(System.ARTIFACTSDIRECTORY)"
       7z a -mx=1 -ms=on -mqs=on "Source-$(Agent.JobName).7z" "$d"
       popd
+
+      if [[ "$AGENT_OS" == Darwin ]]; then cmd="tree -hs /tmp/GCD"; fi
+      if [[ "$AGENT_OS" == Linux ]]; then cmd="tree -hs /tmp/GCD"; fi
+      if [[ "$AGENT_OS" == Win* ]]; then cmd="tree -hs C:\\Temp\\GCD"; fi
+      if [[ -n "${cmd:-}" ]]; then eval $cmd > $SYSTEM_ARTIFACTSDIRECTORY/download-tree.log"; fi
     condition: succeededOrFailed()
     displayName: 'Prepare Artifacts'
 
