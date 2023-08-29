@@ -32,7 +32,7 @@ namespace Universe.Shared
 
         public void DownloadFile(string url, string toFile, int retryCount)
         {
-            for (int i = 0; i <= retryCount; i++)
+            for (int i = 1; i <= retryCount; i++)
             {
                 try
                 {

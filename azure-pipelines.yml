@@ -1,0 +1,85 @@
+variables:
+  NUGET_VERSION: 0.42
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - '**'
+
+jobs:
+
+- job: Tests
+  pool:
+    vmImage: '$(IMAGE)'
+  timeoutInMinutes: 44
+  strategy:
+    maxParallel: 4
+    matrix:
+      'vDefault on Mac OS':
+        IMAGE: 'macos-12'
+      'vDefault Windows 2022':
+        IMAGE: 'windows-2022'
+      'vDefault on Ubuntu 20.04':
+        IMAGE: 'ubuntu-20.04'
+
+  steps:
+
+  - bash: |
+       export DOTNET_VERSIONS="5.0 6.0 7.0"
+       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; test -s /usr/share/dotnet/dotnet && sudo ln -f -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet; test -s /usr/local/share/dotnet/dotnet && sudo ln -f -s /usr/local/share/dotnet/dotnet /usr/local/bin/dotnet; 
+       dotnet --info
+    condition: succeededOrFailed()
+    displayName: 'Bootstrap .NET SDK'
+
+  - bash: |
+       dotnet restore || dotnet restore --disable-parallel
+    condition: succeededOrFailed()
+    displayName: 'Restore'
+
+  - bash: |
+       export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; fi
+       echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
+
+       cd Universe.ChromeAndDriverInstaller.Tests
+       dotnet test -f net6.0
+    condition: succeededOrFailed()
+    displayName: 'Test'
+
+  - bash: |
+      set -eu; set -o pipefail
+      d=$PWD
+      pushd "$(System.ARTIFACTSDIRECTORY)"
+      7z a -mx=1 -ms=on -mqs=on "Source-$(Agent.JobName).7z" "$d"
+      popd
+    condition: succeededOrFailed()
+    displayName: 'Prepare Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: 'Publish Test Results'
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+      testRunTitle: 'All the tests for $(Agent.JobName)'
+
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: cobertura
+      failIfCoverageEmpty: false # Optional      
+      summaryFileLocation: '**/coverage.cobertura.xml'
+
+  - bash: Show-System-Stat
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Linux System Statistic'

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
             int n = 0;
             entries = entries.OrderByDescending(x => x.Type).ThenBy(x => x.Version).ToList();
+            Stopwatch sw = Stopwatch.StartNew();
             foreach (var entry in entries)
             {
                 var link = entry.Uri.ToString();
@@ -78,7 +80,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 // Console.WriteLine($"localDirName: {localDirName}");
                 // if (entry.Type != ChromeOrDriverType.Driver) continue;
 
-                Console.WriteLine($"{++n} of {entries.Count}: {localZipName}");
+                Console.WriteLine($"{++n} of {entries.Count}: {sw.Elapsed} {localZipName}");
                 new WebDownloader().DownloadFile(link, localZipName, retryCount: 3);
 
                 bool isMacOnNonMac = (entry.Platform == ChromeAndDriverPlatform.MacArm64 || entry.Platform == ChromeAndDriverPlatform.MacX64) &&
