@@ -28,6 +28,8 @@ jobs:
   steps:
 
   - bash: |
+       if [[ "${AGENT_OS:-}" != Windows ]]; then df -h -T; fi
+
        export DOTNET_VERSIONS="5.0 6.0 7.0"
        script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; test -s /usr/share/dotnet/dotnet && sudo ln -f -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet; test -s /usr/local/share/dotnet/dotnet && sudo ln -f -s /usr/local/share/dotnet/dotnet /usr/local/bin/dotnet; 
        dotnet --info
@@ -41,7 +43,7 @@ jobs:
 
   - bash: |
        export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
-       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; fi
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; mkdir -p \\Temp\\GCD; compact /c /s \\Temp\\GCD; fi
        echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
 
        cd Universe.ChromeAndDriverInstaller.Tests
@@ -51,7 +53,7 @@ jobs:
 
   - bash: |
        export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
-       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; fi
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; mkdir -p \\Temp\\GCD; compact /c /s \\Temp\\GCD; fi
        echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
 
        cd Universe.ChromeAndDriverInstaller.Tests
@@ -90,6 +92,6 @@ jobs:
       failIfCoverageEmpty: false # Optional      
       summaryFileLocation: '**/coverage.cobertura.xml'
 
-  - bash: Show-System-Stat
+  - bash: 'Show-System-Stat; sudo df -h -T;'
     condition: eq(variables['Agent.OS'], 'Linux')
     displayName: 'Linux System Statistic'
