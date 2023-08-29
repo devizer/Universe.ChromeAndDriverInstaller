@@ -12,6 +12,8 @@ namespace Universe.Shared
 {
     public class WebDownloader
     {
+        private const string _UserAgent = "chromedriver-downloader";
+
         public byte[] DownloadContent(string url)
         {
             ConfigureCertificateValidation();
@@ -21,7 +23,7 @@ namespace Universe.Shared
 #else
             using (var wc = new System.Net.WebClient())
             {
-                wc.Headers["User-Agent"] = "w3-fio";
+                wc.Headers["User-Agent"] = _UserAgent;
                 wc.Proxy = System.Net.WebRequest.DefaultWebProxy;
                 return wc.DownloadData(new Uri(url));
             }
@@ -57,7 +59,7 @@ namespace Universe.Shared
             
             using (var wc = new System.Net.WebClient())
             {
-                wc.Headers["User-Agent"] = "chromedriver-downloaded";
+                wc.Headers["User-Agent"] = _UserAgent;
                 wc.Proxy = System.Net.WebRequest.DefaultWebProxy;
                 wc.DownloadFile(new Uri(url), toFile);
             }
