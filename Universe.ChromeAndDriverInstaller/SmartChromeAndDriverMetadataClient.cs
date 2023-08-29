@@ -36,6 +36,5 @@ namespace Universe.ChromeAndDriverInstaller
 
             return ret.Normalize();
         }
-
     }
 }

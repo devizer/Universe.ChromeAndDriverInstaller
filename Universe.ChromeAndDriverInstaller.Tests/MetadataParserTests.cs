@@ -52,39 +52,34 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             var client = new SmartChromeAndDriverMetadataClient();
             var entries = client.Read();
             Console.WriteLine($"Entries: {entries.Count}");
+            File.WriteAllLines("links.tmp", entries.Select(x => x.Uri.ToString()));
 
             var dir = Env.ChromeDownloadDir;
             if (string.IsNullOrEmpty(dir)) return;
             var zipsDir = Path.Combine(dir, "Zips");
             TryAndRetry.Exec(() => Directory.CreateDirectory(zipsDir));
 
-            List<string> links = new List<string>();
-            foreach (var entry in entries)
-            {
-                Console.WriteLine(entry);
-                links.Add(entry.Uri.ToString());
-            }
 
-            File.WriteAllLines("links.tmp", links);
             int n = 0;
+            entries = entries.OrderByDescending(x => x.Type).ThenBy(x => x.Version).ToList();
             foreach (var entry in entries)
             {
                 var link = entry.Uri.ToString();
                 string localZipName = Path.Combine(
                     zipsDir,
-                    Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(link))) + "-" + Path.GetFileName(link)
+                    entry.RawVersion + "-" + Path.GetFileName(link)
                 );
 
                 var localDirName = Path.Combine(
                     dir,
-                    Path.GetFileNameWithoutExtension(localZipName)
+                    entry.RawVersion + "-" + Path.GetFileNameWithoutExtension(link)
                     );
 
                 // Console.WriteLine($"localDirName: {localDirName}");
                 // if (entry.Type != ChromeOrDriverType.Driver) continue;
 
                 Console.WriteLine($"{++n} of {entries.Count}: {localZipName}");
-                new WebDownloader().DownloadFile(link, localZipName);
+                new WebDownloader().DownloadFile(link, localZipName, retryCount: 3);
 
                 bool isMacOnNonMac = (entry.Platform == ChromeAndDriverPlatform.MacArm64 || entry.Platform == ChromeAndDriverPlatform.MacX64) &&
                                      CrossInfo.ThePlatform != CrossInfo.Platform.MacOSX;

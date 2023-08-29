@@ -1,10 +1,12 @@
 using System;
 using System.IO;
+using System.Linq.Expressions;
 using System.Net;
 #if NETCOREAPP1_0 || NETCOREAPP1_1 || NETSTANDARD1_3
 using System.Net.Http;
 #endif
 using System.Threading.Tasks;
+using Universe.ChromeAndDriverInstaller;
 
 namespace Universe.Shared
 {
@@ -24,6 +26,25 @@ namespace Universe.Shared
                 return wc.DownloadData(new Uri(url));
             }
 #endif
+        }
+
+        public void DownloadFile(string url, string toFile, int retryCount)
+        {
+            for (int i = 0; i <= retryCount; i++)
+            {
+                try
+                {
+                    DownloadFile(url, toFile);
+                }
+                catch (Exception e)
+                {
+                    TryAndRetry.Exec(() => File.Delete(toFile));
+                    if (i<retryCount)
+                        Console.WriteLine($"Warning. Retrying {i} of {retryCount} to download {url} as {toFile}");
+
+                    if (i == retryCount) throw;
+                }
+            }
         }
 
         public void DownloadFile(string url, string toFile)

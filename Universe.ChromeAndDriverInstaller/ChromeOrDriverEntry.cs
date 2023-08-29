@@ -30,7 +30,7 @@ namespace Universe.ChromeAndDriverInstaller
 
             foreach (var entry in all)
             {
-                var key = $"{entry.RawMilestone}:{entry.Type}:{entry.Platform}";
+                var key = $"{entry.RawMilestone}:{entry.RawVersion}:{entry.Type}:{entry.Platform}";
                 if (!hashSet.ContainsKey(key))
                 {
                     hashSet[key] = null;
