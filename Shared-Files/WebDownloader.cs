@@ -14,6 +14,27 @@ namespace Universe.Shared
     {
         private const string _UserAgent = "chromedriver-downloader";
 
+        public byte[] DownloadContent(string url, int retryCount)
+        {
+            Exception err = null;
+            for (int i = 1; i <= retryCount; i++)
+            {
+                try
+                {
+                    return DownloadContent(url);
+                }
+                catch (Exception e)
+                {
+                    if (i < retryCount)
+                        Console.WriteLine($"Warning. Retrying {i} of {retryCount} to download {url}");
+
+                    if (i == retryCount) throw;
+                }
+            }
+
+            throw new InvalidOperationException("Unable to download. Never goes here");
+        }
+
         public byte[] DownloadContent(string url)
         {
             ConfigureCertificateValidation();
@@ -137,7 +158,7 @@ namespace Universe.Shared
                 // nothing can do here
 #else
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => { return true; };
-#if !NET40
+#if NET45
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 #endif
 #endif

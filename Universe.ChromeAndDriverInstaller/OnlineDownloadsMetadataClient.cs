@@ -12,7 +12,7 @@ namespace Universe.ChromeAndDriverInstaller
         public static string GetOnline()
         {
             WebDownloader wd = new WebDownloader();
-            var bytes = wd.DownloadContent(ChromeAndDriverAxioms.DownloadsMetadataEndpoint);
+            var bytes = wd.DownloadContent(ChromeAndDriverAxioms.DownloadsMetadataEndpoint, 3);
             return Utf8.GetString(bytes);
         }
     }
