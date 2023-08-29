@@ -50,6 +50,16 @@ jobs:
     displayName: 'Test'
 
   - bash: |
+       export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; fi
+       echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
+
+       cd Universe.ChromeAndDriverInstaller.Tests
+       dotnet test -f net6.0 --filter "Name~DownloadSmarty"
+    condition: succeededOrFailed()
+    displayName: 'Download All Test'
+
+  - bash: |
       set -eu; set -o pipefail
       d=$PWD
       pushd "$(System.ARTIFACTSDIRECTORY)"

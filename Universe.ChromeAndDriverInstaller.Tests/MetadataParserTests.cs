@@ -80,7 +80,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 // Console.WriteLine($"localDirName: {localDirName}");
                 // if (entry.Type != ChromeOrDriverType.Driver) continue;
 
-                Console.WriteLine($"{++n} of {entries.Count}: {sw.Elapsed} {localZipName}");
+                Console.WriteLine($"{++n} of {entries.Count}: {ToString(sw)} {localZipName}");
                 new WebDownloader().DownloadFile(link, localZipName, retryCount: 3);
 
                 bool isMacOnNonMac = (entry.Platform == ChromeAndDriverPlatform.MacArm64 || entry.Platform == ChromeAndDriverPlatform.MacX64) &&
@@ -90,6 +90,13 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 ChromeOrDriverExtractor.Extract(entry, localZipName, localDirName);
             }
 
+        }
+
+        string ToString(Stopwatch sw)
+        {
+            string format = "mm:ss.f";
+            if (sw.Elapsed.TotalHours >= 1 ) format = "HH:mm:ss.f";
+            return new DateTime().AddMilliseconds(sw.ElapsedMilliseconds).ToString(format);
         }
 
 
