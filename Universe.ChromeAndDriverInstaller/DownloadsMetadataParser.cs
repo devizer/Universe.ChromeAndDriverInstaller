@@ -69,8 +69,9 @@ namespace Universe.ChromeAndDriverInstaller
             if ("linux64".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.Linux64;
 
             if ("mac-arm64".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.MacArm64;
-            if ("mac-m1".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.MacArm64;
+            if ("mac64_m1".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.MacArm64;
             if ("mac-x64".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.MacX64;
+            if ("mac64".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeAndDriverPlatform.MacX64;
 
             return ChromeAndDriverPlatform.Unknown;
         }

@@ -36,7 +36,7 @@ namespace Universe.Shared
             
             using (var wc = new System.Net.WebClient())
             {
-                wc.Headers["User-Agent"] = "w3-fio";
+                wc.Headers["User-Agent"] = "chromedriver-downloaded";
                 wc.Proxy = System.Net.WebRequest.DefaultWebProxy;
                 wc.DownloadFile(new Uri(url), toFile);
             }

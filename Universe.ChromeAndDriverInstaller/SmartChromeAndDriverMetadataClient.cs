@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Universe.ChromeAndDriverInstaller.StaticallyCached;
 using Universe.ChromeAndDriverInstaller.StaticallyCached.DownloadsMetadata;
 
@@ -7,6 +9,11 @@ namespace Universe.ChromeAndDriverInstaller
 {
     public class SmartChromeAndDriverMetadataClient
     {
+        private static Lazy<List<ChromeOrDriverEntry>> _Entries = new Lazy<List<ChromeOrDriverEntry>>(() =>
+        {
+            return new SmartChromeAndDriverMetadataClient().Read();
+        }, LazyThreadSafetyMode.ExecutionAndPublication);
+
 
         public List<ChromeOrDriverEntry> Read()
         {
@@ -24,6 +31,8 @@ namespace Universe.ChromeAndDriverInstaller
                 var entries = DownloadsMetadataParser.Parse(rawJson);
                 ret.AddRange(entries);
             }
+
+            ret.AddRange(LegacyChromeDriverParser.Parse());
 
             return ret.Normalize();
         }

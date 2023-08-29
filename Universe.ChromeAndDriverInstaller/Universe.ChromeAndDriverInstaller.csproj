@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net40;net45;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45;</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,15 +10,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Cached/**/*.json" />
+    <EmbeddedResource Include="StaticallyCached/DownloadsMetadata/*.json" />
+    <EmbeddedResource Include="StaticallyCached/DownloadsMetadata/*.urls" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\Shared-Files\WebDownloader.cs" Link="WebDownloader.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="StaticallyCached\DownloadsMetadata\2023-08-28.json" />
-  </ItemGroup>
 
 </Project>

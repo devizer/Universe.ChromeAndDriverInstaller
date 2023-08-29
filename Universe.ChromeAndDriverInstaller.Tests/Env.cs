@@ -8,6 +8,6 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 {
     internal static class Env
     {
-        public static string ChromeDownloadDir => Environment.GetEnvironmentVariable("CHROME_DOWNLOAD_DIR");
+        public static string ChromeDownloadDir => Environment.GetEnvironmentVariable("CHROMEDRIVER_DOWNLOAD_DIR");
     }
 }

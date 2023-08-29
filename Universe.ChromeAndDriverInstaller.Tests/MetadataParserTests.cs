@@ -55,6 +55,8 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
             var dir = Env.ChromeDownloadDir;
             if (string.IsNullOrEmpty(dir)) return;
+            var zipsDir = Path.Combine(dir, "Zips");
+            TryAndRetry.Exec(() => Directory.CreateDirectory(zipsDir));
 
             List<string> links = new List<string>();
             foreach (var entry in entries)
@@ -65,16 +67,30 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
             File.WriteAllLines("links.tmp", links);
             int n = 0;
-            TryAndRetry.Exec(() => Directory.CreateDirectory(dir));
-            foreach (var link in links)
+            foreach (var entry in entries)
             {
-                string localName = Path.Combine(
-                    dir,
+                var link = entry.Uri.ToString();
+                string localZipName = Path.Combine(
+                    zipsDir,
                     Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(link))) + "-" + Path.GetFileName(link)
                 );
 
-                Console.WriteLine($"{++n} of {links.Count}: {localName}");
-                new WebDownloader().DownloadFile(link, localName);
+                var localDirName = Path.Combine(
+                    dir,
+                    Path.GetFileNameWithoutExtension(localZipName)
+                    );
+
+                // Console.WriteLine($"localDirName: {localDirName}");
+                // if (entry.Type != ChromeOrDriverType.Driver) continue;
+
+                Console.WriteLine($"{++n} of {entries.Count}: {localZipName}");
+                new WebDownloader().DownloadFile(link, localZipName);
+
+                bool isMacOnNonMac = (entry.Platform == ChromeAndDriverPlatform.MacArm64 || entry.Platform == ChromeAndDriverPlatform.MacX64) &&
+                                     CrossInfo.ThePlatform != CrossInfo.Platform.MacOSX;
+
+                if (isMacOnNonMac && entry.Type == ChromeOrDriverType.Chrome) continue;
+                ChromeOrDriverExtractor.Extract(entry, localZipName, localDirName);
             }
 
         }
