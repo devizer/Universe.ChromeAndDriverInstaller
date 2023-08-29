@@ -27,6 +27,15 @@ jobs:
 
   steps:
 
+
+  - bash: |
+       export RESET_FOLDERS_TO_RAID="/tmp/GCD"
+       mkdir -p "$RESET_FOLDERS_TO_RAID"; 
+       url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+       df -h -T
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Raid Compressed: /tmp/GCD'
+
   - bash: |
        if [[ "${AGENT_OS:-}" != Windows ]]; then df -h -T; fi
 
@@ -42,10 +51,6 @@ jobs:
     displayName: 'Restore'
 
   - bash: |
-       export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
-       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; mkdir -p \\Temp\\GCD; compact /c /s \\Temp\\GCD; fi
-       echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
-
        cd Universe.ChromeAndDriverInstaller.Tests
        dotnet test -f net6.0
     condition: succeededOrFailed()
@@ -53,7 +58,7 @@ jobs:
 
   - bash: |
        export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
-       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="\\Temp\\GCD"; mkdir -p \\Temp\\GCD; compact /c /s \\Temp\\GCD; fi
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="C:\\Temp\\GCD"; mkdir -p C:\\Temp\\GCD; pushd C:\\Temp; compact /c GCD; popd; fi
        echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
 
        cd Universe.ChromeAndDriverInstaller.Tests
