@@ -18,6 +18,7 @@ namespace Universe.ChromeAndDriverInstaller.StaticallyCached
             }
 
             ret.Sort();
+            ret.Reverse();
             return ret;
         }
 

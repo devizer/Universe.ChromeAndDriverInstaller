@@ -1,12 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
+using System.Threading;
 
 namespace Universe.ChromeAndDriverInstaller
 {
     public static class TryAndRetry
     {
+        public static T Eval<T>(Func<T> func, T valueOnFail, int retryCount)
+        {
+            for (int i = 1; i <= retryCount; i++)
+            {
+                try
+                {
+                    return func();
+                }
+                catch
+                {
+                    Thread.Sleep(i);
+                }
+            }
+            return valueOnFail;
+        }
+
         public static T Eval<T>(Func<T> func, T valueOnFail)
         {
             try
@@ -24,9 +38,19 @@ namespace Universe.ChromeAndDriverInstaller
             {
                 return func();
             }
-            catch 
+            catch
             {
                 return default(T);
+            }
+        }
+        public static void Exec(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch
+            {
             }
         }
     }
