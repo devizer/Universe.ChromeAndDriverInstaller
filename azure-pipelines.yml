@@ -78,7 +78,7 @@ jobs:
 
       if [[ "$AGENT_OS" == Darwin ]]; then cmd="tree -hs /tmp/GCD"; fi
       if [[ "$AGENT_OS" == Linux ]]; then cmd="tree -hs /tmp/GCD"; fi
-      if [[ "$AGENT_OS" == Win* ]]; then cmd="du -h C:\\Temp\\GCD"; fi
+      if [[ "$AGENT_OS" == Win* ]]; then cmd="du -h /c/Temp/GCD"; fi
       if [[ -n "${cmd:-}" ]]; then eval $cmd > "$SYSTEM_ARTIFACTSDIRECTORY/download-tree.log"; fi
     condition: succeededOrFailed()
     displayName: 'Prepare Artifacts'
