@@ -23,12 +23,14 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         [Test]
         public void TestMajorVersion()
         {
+            if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX) return;
             Console.WriteLine($"Major Chrome Version: [{CurrentChromeVersionClient.TryGetMajorVersion()}]");
         }
 
         [Test]
         public void TestRawVersion()
         {
+            if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX) return;
             Console.WriteLine($"Chrome Version: [{CurrentChromeVersionClient.GetRawVersion()}]");
         }
 

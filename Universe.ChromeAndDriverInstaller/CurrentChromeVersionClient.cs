@@ -10,6 +10,7 @@ namespace Universe.ChromeAndDriverInstaller
 {
     public class CurrentChromeVersionClient
     {
+        // google-chrome on mac is not available
         public static string GetRawVersion()
         {
             if (TinyCrossInfo.IsWindows)
