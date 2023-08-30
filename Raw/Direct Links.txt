@@ -1,0 +1,16 @@
+https://dl.google.com/chrome/mac/stable/
+https://dl.google.com/chrome/mac/beta/
+accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg
+
+accept_tos=https://www.google.com/intl/en_ph/chrome/terms/&_and_accept_tos=https://policies.google.com/terms/googlechrome.pkg
+
+https://dl.google.com/chrome/mac/stable/?accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg
+https://dl.google.com/chrome/mac/stable/accept_tos=https://www.google.com/intl/en_ph/chrome/terms/&_and_accept_tos=https://policies.google.com/terms/googlechrome.pkg
+
+
+
+https://dl.google.com/chrome/mac/universal/stable/gcem/GoogleChrome.pkg
+https://dl.google.com/chrome/mac/universal/stable/gcem/GoogleChrome.pkg
+
+curl -kSL -o ~/chrome.pkg https://dl.google.com/chrome/mac/universal/stable/gcem/GoogleChrome.pkg
+sudo installer -verbose -pkg chrome.pkg -target /
