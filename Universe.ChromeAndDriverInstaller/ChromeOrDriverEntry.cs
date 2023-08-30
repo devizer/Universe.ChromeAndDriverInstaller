@@ -40,5 +40,16 @@ namespace Universe.ChromeAndDriverInstaller
 
             return ret;
         }
+
+        public static ChromeOrDriverEntry FindByVersion(this IEnumerable<ChromeOrDriverEntry> all, int chromeMajor, ChromeOrDriverType type = ChromeOrDriverType.Driver)
+        {
+            foreach (var entry in all)
+            {
+                if (entry.Version.Major == chromeMajor && entry.Type == type)
+                    return entry;
+            }
+
+            return null;
+        }
     }
 }

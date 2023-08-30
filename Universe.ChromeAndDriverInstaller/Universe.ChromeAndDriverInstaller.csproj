@@ -9,6 +9,11 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
   </ItemGroup>
 
+    <!-- Sql Discovery -->
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+    </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="StaticallyCached/DownloadsMetadata/*.json" />
     <EmbeddedResource Include="StaticallyCached/DownloadsMetadata/*.urls" />
@@ -17,6 +22,42 @@
   <ItemGroup>
     <Compile Include="..\Shared-Files\WebDownloader.cs" Link="WebDownloader.cs" />
   </ItemGroup>
+
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <LangVersion>latest</LangVersion>
+        <DebugType>pdbonly</DebugType>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <NoWarn>1701;1702;CS0162;CS0414;CS1591;NU5048</NoWarn>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <OutputType>Library</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
+        <PackageId>$(MSBuildProjectName)</PackageId>
+        <Title>$(MSBuildProjectName)</Title>
+        <Authors>devizer</Authors>
+        <Product>$(MSBuildProjectName)</Product>
+        <Description>Provides Google Chrome and ChromeDriver metadata and binaries over the Internet. Supports both legacy distribution (v43-v114) and actual distribution (v115+). Supported platforms: Windows 32/64, Linux 64, and Mac 64/Arm64</Description>
+        <PackageProjectUrl>https://github.com/devizer/Universe.ChromeAndDriverInstaller</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/devizer/Universe.ChromeAndDriverInstaller</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <!--PackageIconUrl>https://raw.githubusercontent.com/devizer/Universe.SqlTrace/master/Icon/v1.png</PackageIconUrl-->
+        <PackageTags>Discovery Download Chrome ChromeDriver</PackageTags>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
 
 
 </Project>
