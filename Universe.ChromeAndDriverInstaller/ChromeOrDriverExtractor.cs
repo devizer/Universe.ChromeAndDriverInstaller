@@ -30,6 +30,7 @@ namespace Universe.ChromeAndDriverInstaller
                     TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(localPath)));
                     if (!string.IsNullOrEmpty(zipEntry.Name))
                     {
+                        // not a folder
                         using (var entrySrc = zipEntry.Open())
                         using (var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         {
