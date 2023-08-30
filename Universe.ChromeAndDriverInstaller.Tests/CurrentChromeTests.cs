@@ -7,23 +7,29 @@ namespace Universe.ChromeAndDriverInstaller.Tests
     public class CurrentChromeTests : NUnitTestsBase
     {
         [Test]
-        public void TestPath()
+        public void TestWindowsChromePath()
         {
             if (!TinyCrossInfo.IsWindows) return;
             Console.WriteLine(CurrentChromeVersionClient.GetWindowsChromePath());
         }
 
         [Test]
-        public void TestRawVersion()
+        public void TestWindowsRawVersion()
         {
             if (!TinyCrossInfo.IsWindows) return;
             Console.WriteLine(CurrentChromeVersionClient.GetWindowsChromeVersion());
         }
-        [Test]
 
+        [Test]
         public void TestMajorVersion()
         {
             Console.WriteLine($"Major Chrome Version: [{CurrentChromeVersionClient.TryGetMajorVersion()}]");
+        }
+
+        [Test]
+        public void TestRawVersion()
+        {
+            Console.WriteLine($"Chrome Version: [{CurrentChromeVersionClient.GetRawVersion()}]");
         }
 
     }

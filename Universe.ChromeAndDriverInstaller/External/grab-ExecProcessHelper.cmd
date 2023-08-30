@@ -1,0 +1,1 @@
+curl -kSL -o ExecProcessHelper.cs https://raw.githubusercontent.com/devizer/Universe.Postgres.ServersAndSnapshots/main/Universe.Postgres.ServersAndSnapshots/ExecProcessHelper.cs

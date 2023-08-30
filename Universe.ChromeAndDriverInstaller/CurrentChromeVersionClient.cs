@@ -17,7 +17,7 @@ namespace Universe.ChromeAndDriverInstaller
                 return GetWindowsChromeVersion();
             }
 
-            return null;
+            return GetNixChromeVersion();
         }
 
         public static int? TryGetMajorVersion()
@@ -34,6 +34,54 @@ namespace Universe.ChromeAndDriverInstaller
                     return int.Parse(raw.Split('.').First());
                 }
                 catch { }
+            }
+
+            return null;
+        }
+
+        public static string GetNixChromeVersion()
+        {
+            var result = ExecProcessHelper.HiddenExec("google-chrome", "--version");
+            result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
+            return ParseVersionByChromeOutput(result.OutputText);
+        }
+
+        public static string ParseVersionByChromeOutput(string output)
+        {
+            string firstLine = output.Split(new[] { '\r', '\n' }).FirstOrDefault(x => x.Trim().Length > 0);
+            string[] words = firstLine?.Split(' ').Where(x => x.Length > 0).ToArray();
+            if (words == null)
+                throw new InvalidOperationException("Can't obtain chrome version");
+
+            for (int i = 0; i < words.Length; i++)
+            {
+                var ret = TryParseVersion(words[i]);
+                if (ret != null) return ret.ToString();
+            }
+
+            return null;
+        }
+
+        public static Version TryParseVersion(string word)
+        {
+            StringBuilder raw = new StringBuilder();
+            foreach (var ch in word)
+            {
+                if ((ch >= '0' && ch <= '9') || ch == '.')
+                    raw.Append(ch);
+
+                else break;
+            }
+
+            var candidate = raw.ToString();
+            if (candidate.Count(x => x == '.') >= 2)
+            {
+                try
+                {
+                    return new Version(candidate);
+                }
+                catch {}
+
             }
 
             return null;
