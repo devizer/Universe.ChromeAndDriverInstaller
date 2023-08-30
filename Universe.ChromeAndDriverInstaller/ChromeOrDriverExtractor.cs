@@ -25,6 +25,7 @@ namespace Universe.ChromeAndDriverInstaller
             {
                 foreach (var zipEntry in za.Entries)
                 {
+                    Console.WriteLine($"ZIP Entry: [{zipEntry.FullName}]");
                     var localPath = Path.Combine(targetDir, zipEntry.FullName);
                     TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(localPath)));
                     using (var entrySrc = zipEntry.Open())
