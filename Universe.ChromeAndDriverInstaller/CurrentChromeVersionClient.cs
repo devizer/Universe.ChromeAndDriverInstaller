@@ -42,7 +42,11 @@ namespace Universe.ChromeAndDriverInstaller
 
         public static string GetNixChromeVersion()
         {
-            var result = ExecProcessHelper.HiddenExec("google-chrome", "--version");
+            var exe = CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX
+                ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                : "google-chrome";
+
+            var result = ExecProcessHelper.HiddenExec(exe, "--version");
             result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
             return ParseVersionByChromeOutput(result.OutputText);
         }
