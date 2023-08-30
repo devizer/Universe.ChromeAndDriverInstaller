@@ -45,7 +45,7 @@ namespace Universe.ChromeAndDriverInstaller
         {
             if (platform == ChromeAndDriverPlatform.Unknown)
             {
-                if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows) platform = ChromeAndDriverPlatform.Win32;
+                if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows) platform = Environment.Is64BitOperatingSystem ? ChromeAndDriverPlatform.Win64 : ChromeAndDriverPlatform.Win32;
                 else if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX) platform = ChromeAndDriverPlatform.MacX64;
                 else platform = ChromeAndDriverPlatform.Linux64;
                 Console.WriteLine($"Detected platform {CrossInfo.ThePlatform} --> {platform}");
