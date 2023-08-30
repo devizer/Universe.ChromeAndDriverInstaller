@@ -41,11 +41,19 @@ namespace Universe.ChromeAndDriverInstaller
             return ret;
         }
 
-        public static ChromeOrDriverEntry FindByVersion(this IEnumerable<ChromeOrDriverEntry> all, int chromeMajor, ChromeOrDriverType type = ChromeOrDriverType.Driver)
+        public static ChromeOrDriverEntry FindByVersion(this IEnumerable<ChromeOrDriverEntry> all, int chromeMajor, ChromeOrDriverType type = ChromeOrDriverType.Driver, ChromeAndDriverPlatform platform = ChromeAndDriverPlatform.Unknown)
         {
+            if (platform == ChromeAndDriverPlatform.Unknown)
+            {
+                if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows) platform = ChromeAndDriverPlatform.Win32;
+                else if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX) platform = ChromeAndDriverPlatform.MacX64;
+                else platform = ChromeAndDriverPlatform.Linux64;
+                Console.WriteLine($"Detected platform {CrossInfo.ThePlatform} --> {platform}");
+            }
+
             foreach (var entry in all)
             {
-                if (entry.Version.Major == chromeMajor && entry.Type == type)
+                if (entry.Version.Major == chromeMajor && entry.Type == type && entry.Platform == platform)
                     return entry;
             }
 

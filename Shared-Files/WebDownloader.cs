@@ -82,7 +82,13 @@ namespace Universe.Shared
             {
                 wc.Headers["User-Agent"] = _UserAgent;
                 wc.Proxy = System.Net.WebRequest.DefaultWebProxy;
-                wc.DownloadFile(new Uri(url), toFile);
+                // wc.DownloadFile(new Uri(url), toFile);
+                using (Stream net = wc.OpenRead(url))
+                using (FileStream fs = new FileStream(toFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                {
+                    net.CopyTo(fs);
+
+                }
             }
 #endif
         }

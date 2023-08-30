@@ -19,7 +19,22 @@ namespace Universe.ChromeAndDriverInstaller
 
             TryAndRetry.Exec(() => Directory.CreateDirectory(targetDir));
             // ZipFile Is not supported by Net 4.0
-            ZipFile.ExtractToDirectory(zipFile, targetDir);
+            // ZipFile.ExtractToDirectory(zipFile, targetDir);
+            using(FileStream fs = new FileStream(zipFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Read))
+            {
+                foreach (var zipEntry in za.Entries)
+                {
+                    var localPath = Path.Combine(targetDir, zipEntry.FullName);
+                    TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(localPath)));
+                    using (var entrySrc = zipEntry.Open())
+                    using(var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    {
+                        entrySrc.CopyTo(localFile);
+                    }
+                }
+            }
+            
             string[] candidates = new[] { "chromedriver.exe", "chromedriver" };
             if (entry.Type == ChromeOrDriverType.Driver)
                 candidates = new[] { "chromedriver.exe", "chromedriver" };

@@ -1,0 +1,1 @@
+curl -kSL -o CrossInfo.cs https://raw.githubusercontent.com/devizer/Universe.CpuUsage/master/Universe.CpuUsage/CrossInfo.cs

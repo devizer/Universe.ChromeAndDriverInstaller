@@ -1,5 +1,5 @@
 @echo off
-set VER=1.1.1
+set VER=1.1.4
 dotnet test -c Release -f net6.0
 if errorlevel 1 goto :error
 pushd Universe.ChromeAndDriverInstaller
