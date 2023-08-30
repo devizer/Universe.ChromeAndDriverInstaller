@@ -28,10 +28,13 @@ namespace Universe.ChromeAndDriverInstaller
                     Console.WriteLine($"ZIP Entry: [{zipEntry.FullName}]");
                     var localPath = Path.Combine(targetDir, zipEntry.FullName);
                     TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(localPath)));
-                    using (var entrySrc = zipEntry.Open())
-                    using(var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    if (!string.IsNullOrEmpty(zipEntry.Name))
                     {
-                        entrySrc.CopyTo(localFile);
+                        using (var entrySrc = zipEntry.Open())
+                        using (var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                        {
+                            entrySrc.CopyTo(localFile);
+                        }
                     }
                 }
             }
