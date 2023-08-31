@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -46,7 +47,16 @@ namespace Universe.ChromeAndDriverInstaller
                 ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
                 : "google-chrome";
 
-            var result = ExecProcessHelper.HiddenExec(exe, "--version");
+            ExecProcessHelper.ExecResult result;
+            try
+            {
+                result = ExecProcessHelper.HiddenExec(exe + "--missing", "--version");
+            }
+            catch (Win32Exception w32ex)
+            {
+                throw new InvalidOperationException($"Missing chrome. Error {w32ex.NativeErrorCode}");
+            }
+
             result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
             return ParseVersionByChromeOutput(result.OutputText);
         }
