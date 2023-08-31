@@ -46,7 +46,7 @@ namespace Universe.ChromeAndDriverInstaller
                 ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
                 : "google-chrome";
 
-            var result = ExecProcessHelper.HiddenExec(exe + "-missing", "--version");
+            var result = ExecProcessHelper.HiddenExec(exe, "--version");
             result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
             return ParseVersionByChromeOutput(result.OutputText);
         }
