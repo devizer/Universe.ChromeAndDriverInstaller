@@ -50,7 +50,7 @@ namespace Universe.ChromeAndDriverInstaller
             ExecProcessHelper.ExecResult result;
             try
             {
-                result = ExecProcessHelper.HiddenExec(exe + "--missing", "--version");
+                result = ExecProcessHelper.HiddenExec(exe, "--version");
             }
             catch (Win32Exception w32ex)
             {
