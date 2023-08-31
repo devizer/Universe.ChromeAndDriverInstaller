@@ -43,9 +43,29 @@ namespace Universe.ChromeAndDriverInstaller
 
         public static string GetNixChromeVersion()
         {
-            var exe = CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX
-                ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-                : "google-chrome";
+            // TODO: Chrome for Enterprise?
+            string exe = null;
+            if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX)
+            {
+                var candidates = new[]
+                {
+                    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+                    "/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+                };
+
+                foreach (var candidate in candidates)
+                {
+                    if (File.Exists(candidate)) { exe = candidate; break; }
+                }
+
+                if (exe == null)
+                {
+                    // No Any Chrome Found
+                    return null;
+                }
+            }
+            else exe = "google-chrome"; // Linux
+
 
             ExecProcessHelper.ExecResult result;
             try
