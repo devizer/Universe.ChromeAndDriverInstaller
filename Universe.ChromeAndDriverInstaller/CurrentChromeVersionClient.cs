@@ -10,7 +10,6 @@ namespace Universe.ChromeAndDriverInstaller
 {
     public class CurrentChromeVersionClient
     {
-        // google-chrome on mac is not available
         public static string GetRawVersion()
         {
             if (TinyCrossInfo.IsWindows)
@@ -18,6 +17,7 @@ namespace Universe.ChromeAndDriverInstaller
                 return GetWindowsChromeVersion();
             }
 
+            // TODO: Exception if missing chrome 
             return GetNixChromeVersion();
         }
 
@@ -46,7 +46,7 @@ namespace Universe.ChromeAndDriverInstaller
                 ? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
                 : "google-chrome";
 
-            var result = ExecProcessHelper.HiddenExec(exe, "--version");
+            var result = ExecProcessHelper.HiddenExec(exe + "-missing", "--version");
             result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
             return ParseVersionByChromeOutput(result.OutputText);
         }
