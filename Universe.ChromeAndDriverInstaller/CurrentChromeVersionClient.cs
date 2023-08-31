@@ -54,7 +54,7 @@ namespace Universe.ChromeAndDriverInstaller
             }
             catch (Win32Exception w32ex)
             {
-                throw new InvalidOperationException($"Missing chrome. Error {w32ex.NativeErrorCode}");
+                throw new InvalidOperationException($"Missing chrome. NativeError {w32ex.NativeErrorCode}. Error {w32ex.ErrorCode}. HResult {w32ex.HResult}");
             }
 
             result.DemandGenericSuccess("Query Google Chrome version (google-chrome --version)", false);
