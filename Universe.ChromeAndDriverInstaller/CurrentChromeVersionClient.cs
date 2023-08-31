@@ -54,6 +54,8 @@ namespace Universe.ChromeAndDriverInstaller
             }
             catch (Win32Exception w32ex)
             {
+                // Linux & Mac: NativeError 2. Error -2147467259. HResult -2147467259
+                if (w32ex.NativeErrorCode == 2) return null;
                 throw new InvalidOperationException($"Missing chrome. NativeError {w32ex.NativeErrorCode}. Error {w32ex.ErrorCode}. HResult {w32ex.HResult}");
             }
 
