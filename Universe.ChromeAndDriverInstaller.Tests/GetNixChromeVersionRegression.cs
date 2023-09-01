@@ -15,7 +15,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         public void Test30Seconds()
         {
             string chromeVersion = null;
-            if (CrossInfo.ThePlatform != CrossInfo.Platform.Linux) return;
+            if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows) return;
             Stopwatch sw = Stopwatch.StartNew();
             int n = 0;
             while (sw.Elapsed.TotalSeconds < 30)
