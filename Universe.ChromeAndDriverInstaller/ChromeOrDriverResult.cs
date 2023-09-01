@@ -11,5 +11,16 @@
         {
             return $"{Metadata}, Executable: {ExecutableFullPath}, ZIP: {ArchiveFullPath}, Extracted To: {ExtractedFullPath}";
         }
+
+        public virtual string ToString(bool multiline)
+        {
+            if (!multiline) return ToString();
+            return $@"{Metadata}
+Executable: {ExecutableFullPath}
+ZIP: {ArchiveFullPath}
+Extracted To: {ExtractedFullPath}";
+
+
+        }
     }
 }

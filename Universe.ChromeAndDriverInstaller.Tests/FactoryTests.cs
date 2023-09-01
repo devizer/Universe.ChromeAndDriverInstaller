@@ -11,7 +11,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         {
             ChromeOrDriverResult result = ChromeOrDriverFactory.DownloadAndExtract(null, ChromeOrDriverType.Driver);
             Console.WriteLine($"RESULT{Environment.NewLine}──────");
-            Console.WriteLine($"{result}");
+            Console.WriteLine($"{result.ToString(true)}");
         }
 
         [Test] // Chrome should be preinstalled
@@ -19,7 +19,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         {
             ChromeOrDriverResult result = ChromeOrDriverFactory.DownloadAndExtract(null, ChromeOrDriverType.Chrome);
             Console.WriteLine($"RESULT{Environment.NewLine}──────");
-            Console.WriteLine($"{result}");
+            Console.WriteLine($"{result.ToString(true)}");
         }
 
 
