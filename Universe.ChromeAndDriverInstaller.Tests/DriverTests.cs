@@ -58,11 +58,11 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             };
             if (!TinyCrossInfo.IsWindows)
             {
-                options.AddArgument("--disable-extensions");
-                options.AddArgument("--disable-gpu");
-                options.AddArgument("--disable-dev-shm-usage");
-                options.AddArgument("--no-sandbox");
-                options.AddArgument("--headless");
+                // options.AddArgument("--disable-extensions");
+                options.AddArgument("disable-gpu");
+                // options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("no-sandbox");
+                options.AddArgument("headless");
             }
 
             using (svc)
