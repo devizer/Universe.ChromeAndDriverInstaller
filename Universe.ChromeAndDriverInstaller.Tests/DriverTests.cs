@@ -54,6 +54,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 options.AddArgument("--disable-gpu");
                 options.AddArgument("--disable-dev-shm-usage");
                 options.AddArgument("--no-sandbox");
+                options.AddArgument("--headless");
             }
 
             using (var chromeDriver = new ChromeDriver(svc, options))
