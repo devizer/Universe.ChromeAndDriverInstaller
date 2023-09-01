@@ -40,7 +40,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             Console.WriteLine($"Downloading and extracting chrome");
             var localChrome = ChromeOrDriverFactory.DownloadAndExtract(stableVersion.Major, ChromeOrDriverType.Chrome);
 
-            using ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
+            ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
             var artifactFolder = Environment.GetEnvironmentVariable("$SYSTEM_ARTIFACTSDIRECTORY");
             if (!string.IsNullOrEmpty(artifactFolder))
             {
@@ -65,6 +65,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 options.AddArgument("--headless");
             }
 
+            using (svc)
             using (var chromeDriver = new ChromeDriver(svc, options))
             {
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
