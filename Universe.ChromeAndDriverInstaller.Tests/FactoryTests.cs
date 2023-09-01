@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using Universe.NUnitTests;
 
 namespace Universe.ChromeAndDriverInstaller.Tests
 {
-    public class FactoryTests
+    public class FactoryTests: NUnitTestsBase
     {
         [Test] // Chrome should be preinstalled
         public void A_DownloadCurrentDriver()
