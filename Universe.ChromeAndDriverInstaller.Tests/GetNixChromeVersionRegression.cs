@@ -34,6 +34,9 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             }
 
             Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is finished. Total Errors {errors.Count} of {n}. Duration is {sw.Elapsed.TotalSeconds:n1} seconds. Version is {chromeVersion}");
+
+            if (errors.Count > 0)
+                throw new Exception($"Total Errors {errors.Count} of {n}", errors.First());
         }
     }
 }
