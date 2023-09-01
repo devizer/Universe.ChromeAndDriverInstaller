@@ -23,6 +23,8 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 n++;
                 Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version");
             }
+
+            Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is successful {n} times during {sw.Elapsed.TotalSeconds:n1} seconds");
         }
     }
 }
