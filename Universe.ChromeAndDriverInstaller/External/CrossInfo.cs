@@ -1,4 +1,6 @@
-﻿namespace Universe
+﻿using System.Threading;
+
+namespace Universe
 {
     using System;
     using System.Diagnostics;
@@ -106,6 +108,15 @@
                 ret = ret.Trim('\r', '\n', '\t', ' ');
 
             return exitCode == 0 ? ret : ret;
+        }
+
+        private static Lazy<bool> _IsMacOnArm => new Lazy<bool>(FetchIsMacOnArm, LazyThreadSafetyMode.ExecutionAndPublication);
+        public static bool IsMacOnArm = _IsMacOnArm.Value;
+        private static bool FetchIsMacOnArm()
+        {
+            if (ThePlatform != Platform.MacOSX) return false;
+            var unameMachine = ExecUName("-m");
+            return unameMachine.IndexOf("arm", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         public static void HiddenExec(string command, string args, out string output, out int exitCode)
