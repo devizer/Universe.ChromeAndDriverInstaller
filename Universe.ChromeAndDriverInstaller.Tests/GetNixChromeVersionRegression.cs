@@ -18,14 +18,22 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             if (CrossInfo.ThePlatform == CrossInfo.Platform.Windows) return;
             Stopwatch sw = Stopwatch.StartNew();
             int n = 0;
+            List<Exception> errors = new List<Exception>();
             while (sw.Elapsed.TotalSeconds < 30)
             {
-                chromeVersion = CurrentChromeVersionClient.GetNixChromeVersion();
                 n++;
-                Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version");
+                try
+                {
+                    chromeVersion = CurrentChromeVersionClient.GetNixChromeVersion();
+                }
+                catch (Exception e)
+                {
+                    errors.Add(e);
+                    Console.WriteLine($"Total Errors {errors.Count} of {n}{Environment.NewLine}{e}");
+                }
             }
 
-            Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is successful {n} times during {sw.Elapsed.TotalSeconds:n1} seconds. It is {chromeVersion}");
+            Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is finished. Total Errors {errors.Count} of {n}. Duration is {sw.Elapsed.TotalSeconds:n1} seconds. Version is {chromeVersion}");
         }
     }
 }

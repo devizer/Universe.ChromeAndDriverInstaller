@@ -43,6 +43,11 @@ namespace Universe.ChromeAndDriverInstaller
 
         public static string GetNixChromeVersion()
         {
+            return TryAndRetry.Eval(() => GetNixChromeVersion_Impl(), null, 3);
+        }
+
+        private static string GetNixChromeVersion_Impl()
+        {
             // TODO: Chrome for Enterprise?
             string exe = null;
             if (CrossInfo.ThePlatform == CrossInfo.Platform.MacOSX)
