@@ -22,10 +22,10 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             {
                 chromeVersion = CurrentChromeVersionClient.GetNixChromeVersion();
                 n++;
-                Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version. It is {chromeVersion}");
+                Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version");
             }
 
-            Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is successful {n} times during {sw.Elapsed.TotalSeconds:n1} seconds");
+            Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is successful {n} times during {sw.Elapsed.TotalSeconds:n1} seconds. It is {chromeVersion}");
         }
     }
 }
