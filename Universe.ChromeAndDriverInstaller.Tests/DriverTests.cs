@@ -42,10 +42,19 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
             ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
 
+            // TODO: https://stackoverflow.com/a/50642913
+            // --disable-extensions, --disable-gpu, --disable-dev-shm-usage, --no-sandbox
             ChromeOptions options = new ChromeOptions()
             {
                 BinaryLocation = localChrome.ExecutableFullPath,
             };
+            if (!TinyCrossInfo.IsWindows)
+            {
+                options.AddArgument("--disable-extensions");
+                options.AddArgument("--disable-gpu");
+                options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--no-sandbox");
+            }
 
             using (var chromeDriver = new ChromeDriver(svc, options))
             {
