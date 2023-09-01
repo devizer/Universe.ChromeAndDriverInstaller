@@ -14,14 +14,15 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         [Test]
         public void Test30Seconds()
         {
+            string chromeVersion = null;
             if (CrossInfo.ThePlatform != CrossInfo.Platform.Linux) return;
             Stopwatch sw = Stopwatch.StartNew();
             int n = 0;
             while (sw.Elapsed.TotalSeconds < 30)
             {
-                string chromeVersion = CurrentChromeVersionClient.GetNixChromeVersion();
+                chromeVersion = CurrentChromeVersionClient.GetNixChromeVersion();
                 n++;
-                Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version");
+                Assert.IsTrue(!string.IsNullOrEmpty(chromeVersion), $"{n}: missing chrome version. It is {chromeVersion}");
             }
 
             Console.WriteLine($"CurrentChromeVersionClient.GetNixChromeVersion() is successful {n} times during {sw.Elapsed.TotalSeconds:n1} seconds");
