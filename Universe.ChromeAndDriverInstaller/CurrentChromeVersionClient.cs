@@ -88,7 +88,7 @@ namespace Universe.ChromeAndDriverInstaller
             string firstLine = output.Split(new[] { '\r', '\n' }).FirstOrDefault(x => x.Trim().Length > 0);
             string[] words = firstLine?.Split(' ').Where(x => x.Length > 0).ToArray();
             if (words == null)
-                throw new InvalidOperationException("Can't obtain chrome version");
+                throw new InvalidOperationException($"Can't obtain chrome version. Output is '{output}'");
 
             for (int i = 0; i < words.Length; i++)
             {
