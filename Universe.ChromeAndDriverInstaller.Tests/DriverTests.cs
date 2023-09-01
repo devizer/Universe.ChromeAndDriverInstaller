@@ -40,7 +40,15 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             Console.WriteLine($"Downloading and extracting chrome");
             var localChrome = ChromeOrDriverFactory.DownloadAndExtract(stableVersion.Major, ChromeOrDriverType.Chrome);
 
-            ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
+            using ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
+            var artifactFolder = Environment.GetEnvironmentVariable("$SYSTEM_ARTIFACTSDIRECTORY");
+            if (!string.IsNullOrEmpty(artifactFolder))
+            {
+                svc.LogPath = Path.Combine(artifactFolder, $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log");
+                svc.EnableAppendLog = true;
+                svc.EnableVerboseLogging = true;
+            }
+
 
             // TODO: https://stackoverflow.com/a/50642913
             // --disable-extensions, --disable-gpu, --disable-dev-shm-usage, --no-sandbox
