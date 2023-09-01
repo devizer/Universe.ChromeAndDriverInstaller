@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net6.0;netcoreapp3.1;net45;net46;</TargetFrameworks>
+    <TargetFrameworks>net5.0;net6.0;netcoreapp3.1;net461;</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -9,7 +9,20 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+      <PackageReference Include="Selenium.WebDriver" Version="4.12.2" />
     </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' Or '$(TargetFramework)' == 'netcoreapp3.1' ">
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+    </ItemGroup>
+
+    <!-- Selenuim 4.12 needs 7+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+       <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+    </ItemGroup>
+    -->
+
+
 
     <ItemGroup>
       <ProjectReference Include="..\Universe.ChromeAndDriverInstaller\Universe.ChromeAndDriverInstaller.csproj" />
