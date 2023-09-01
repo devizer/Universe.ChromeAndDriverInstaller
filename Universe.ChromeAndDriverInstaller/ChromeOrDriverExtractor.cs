@@ -40,7 +40,7 @@ namespace Universe.ChromeAndDriverInstaller
                         if (!TinyCrossInfo.IsWindows)
                         {
                             string[] exeNames = new[] { "chromedriver", "chrome", "Google Chrome for Testing" };
-                            if (exeNames.Any(x => x.Equals(zipEntry.Name)))
+                            if (true || exeNames.Any(x => x.Equals(zipEntry.Name)))
                             {
                                 DebugConsole.WriteLine($"Apply PLUS X for '{localPath}'");
                                 TryAndRetry.Exec(() => CrossInfo.HiddenExec("chmod", $"+x \"{localPath}\"", out var _1, out var _2));
