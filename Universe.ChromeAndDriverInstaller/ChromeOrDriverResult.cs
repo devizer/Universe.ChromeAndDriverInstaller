@@ -12,5 +12,4 @@
             return $"{Metadata}, Executable: {ExecutableFullPath}, ZIP: {ArchiveFullPath}, Extracted To: {ExtractedFullPath}";
         }
     }
-
 }
