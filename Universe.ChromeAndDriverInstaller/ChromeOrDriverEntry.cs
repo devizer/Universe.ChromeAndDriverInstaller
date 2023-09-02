@@ -58,7 +58,7 @@ namespace Universe.ChromeAndDriverInstaller
 #endif
                 }
                 else platform = ChromeAndDriverPlatform.Linux64;
-                DebugConsole.WriteLine($"Resolved current platform {CrossInfo.ThePlatform} --> {platform}");
+                // DebugConsole.WriteLine($"Resolved current platform {CrossInfo.ThePlatform} --> {platform}");
             }
 
             return platform;

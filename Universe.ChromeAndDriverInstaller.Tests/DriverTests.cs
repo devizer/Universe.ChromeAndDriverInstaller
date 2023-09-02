@@ -21,12 +21,12 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             OpenWhatIsMyBrowser(false);
         }
 
-        [Test]
+        // [Selenium] System.PlatformNotSupportedException : System.Drawing.Common is not supported on this platform.
+        [Test, RequiredOs(Os.Windows)]
         public void B_Screenshot_What_Is_My_Browser()
         {
             OpenWhatIsMyBrowser(true);
         }
-
 
         public void OpenWhatIsMyBrowser(bool needScreenshot)
         {
@@ -71,6 +71,9 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
                 chromeDriver.Manage().Window.Size = new Size(1400, 1000);
                 chromeDriver.Manage().Window.Size = new Size(1400, 3000);
+
+                var docTitle = chromeDriver.Title;
+                Console.WriteLine($"Got Document Title: '{docTitle}'");
 
                 if (needScreenshot)
                 {

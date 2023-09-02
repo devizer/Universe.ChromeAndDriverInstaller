@@ -32,7 +32,7 @@ namespace Universe.ChromeAndDriverInstaller
             if (platform == ChromeAndDriverPlatform.Unknown)
             {
                 platform = platform.ResolveCurrentPlatform();
-                DebugConsole.WriteLine($"Resolved current platform {CrossInfo.ThePlatform} --> {platform}");
+                // DebugConsole.WriteLine($"Resolved current platform {CrossInfo.ThePlatform} --> {platform}");
             }
 
             if (majorVersion.HasValue)
