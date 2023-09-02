@@ -18,12 +18,14 @@ jobs:
   strategy:
     maxParallel: 4
     matrix:
-      'vDefault on Mac OS':
+      'Chrome on Mac OS':
         IMAGE: 'macos-12'
-      'vDefault Windows 2022':
+      'Chrome Windows 2022':
         IMAGE: 'windows-2022'
-      'vDefault on Ubuntu 20.04':
+      'Chrome on Ubuntu 20.04':
         IMAGE: 'ubuntu-20.04'
+      'Chrome on Ubuntu 22.04':
+        IMAGE: 'ubuntu-22.04'
 
   steps:
 
