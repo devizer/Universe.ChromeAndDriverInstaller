@@ -84,13 +84,14 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                     var rawScreenshot = screenshot.AsByteArray;
                     Console.WriteLine($"First {GetFirstEightBytes(rawScreenshot)}");
                     File.WriteAllBytes(fileName + ".bin", rawScreenshot);
-                    screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
+                    // screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
+                    ScreenshotSmartSaver.SaveAsPng(screenshot, fileName + ".bmp");
                 }
             }
-
         }
 
-        // PNG: 137 80 78 71 13 10 26 10
+        // PNG:    137 80 78 71 13 10 26 10
+        // Actual: 137 80 78 71 13 10 26 10
         static string GetFirstEightBytes(byte[] arr)
         {
             if (arr == null) return "null";
