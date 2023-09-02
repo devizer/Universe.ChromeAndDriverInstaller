@@ -81,6 +81,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                     var fileName = Path.Combine(dir, "what-is-my-browser");
                     Console.WriteLine($"Saving Screenshot as [{fileName}]");
                     Screenshot screenshot = ((ITakesScreenshot)chromeDriver).GetScreenshot();
+                    File.WriteAllBytes(fileName + ".bin", screenshot.AsByteArray); 
                     screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
                 }
             }
