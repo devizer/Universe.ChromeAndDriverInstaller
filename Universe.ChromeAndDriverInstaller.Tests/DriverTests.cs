@@ -72,7 +72,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             {
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
                 chromeDriver.Manage().Window.Size = new Size(1400, 1000);
-                chromeDriver.Manage().Window.Size = new Size(1400, 3000);
+                chromeDriver.Manage().Window.Size = new Size(1400, 6000);
 
                 var docTitle = chromeDriver.Title;
                 Console.WriteLine($"Got Document Title: '{docTitle}'");
