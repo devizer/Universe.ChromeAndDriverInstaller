@@ -85,7 +85,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                     Console.WriteLine($"First {GetFirstEightBytes(rawScreenshot)}");
                     File.WriteAllBytes(fileName + ".bin", rawScreenshot);
                     // screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
-                    ScreenshotSmartSaver.SaveAsPng(screenshot, fileName + ".bmp");
+                    ScreenshotSmartSaver.SaveAsPng(screenshot, fileName + ".png");
                 }
             }
         }

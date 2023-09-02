@@ -15,12 +15,14 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         {
             var asArray = screenshot.AsByteArray;
             var eightBytes = string.Join(" ", asArray.Take(8));
-            if (eightBytes == "137 80 78 71 13 10 26 10")
+            var isPng = eightBytes == "137 80 78 71 13 10 26 10";
+            if (isPng)
             {
-                File.WriteAllBytes(fileName + ".bin", asArray);
+                File.WriteAllBytes(fileName, asArray);
             }
             else
             {
+                // [Selenium] System.PlatformNotSupportedException : System.Drawing.Common is not supported on this platform.
                 screenshot.SaveAsFile(fileName, ScreenshotImageFormat.Png);
             }
         }
