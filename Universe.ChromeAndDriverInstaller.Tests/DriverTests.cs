@@ -16,14 +16,16 @@ namespace Universe.ChromeAndDriverInstaller.Tests
     public class DriverTests : NUnitTestsBase
     {
         [Test]
-        public void A_Open_What_Is_My_Browser()
+        [TestCase("first")]
+        [TestCase("second")]
+        public void A_Open_What_Is_My_Browser(string @case)
         {
             OpenWhatIsMyBrowser(false);
         }
 
         // [Selenium] System.PlatformNotSupportedException : System.Drawing.Common is not supported on this platform.
         [Test /*, RequiredOs(Os.Windows)*/]
-        public void B_Screenshot_What_Is_My_Browser()
+        public void C_Screenshot_What_Is_My_Browser()
         {
             OpenWhatIsMyBrowser(true);
         }

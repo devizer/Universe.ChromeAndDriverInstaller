@@ -15,6 +15,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         {
             var asArray = screenshot.AsByteArray;
             var eightBytes = string.Join(" ", asArray.Take(8));
+            // http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
             var isPng = eightBytes == "137 80 78 71 13 10 26 10";
             if (isPng)
             {
