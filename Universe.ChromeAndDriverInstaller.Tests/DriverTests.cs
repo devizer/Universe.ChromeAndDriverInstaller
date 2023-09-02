@@ -67,6 +67,9 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 options.AddArgument("--headless");
             }
 
+            options.AddArguments("force-device-scale-factor=2.0");
+            options.AddArguments("high-dpi-support=2.0");
+
             using (svc)
             using (var chromeDriver = new ChromeDriver(svc, options))
             {
