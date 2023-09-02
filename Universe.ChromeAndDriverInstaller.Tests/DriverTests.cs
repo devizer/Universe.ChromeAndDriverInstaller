@@ -22,7 +22,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         }
 
         // [Selenium] System.PlatformNotSupportedException : System.Drawing.Common is not supported on this platform.
-        [Test, RequiredOs(Os.Windows)]
+        [Test /*, RequiredOs(Os.Windows)*/]
         public void B_Screenshot_What_Is_My_Browser()
         {
             OpenWhatIsMyBrowser(true);
@@ -78,10 +78,10 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 if (needScreenshot)
                 {
                     var dir = Path.GetFullPath(Environment.CurrentDirectory);
-                    var fileName = Path.Combine(dir, "whatismybrowser.png");
+                    var fileName = Path.Combine(dir, "what-is-my-browser");
                     Console.WriteLine($"Saving Screenshot as [{fileName}]");
                     Screenshot screenshot = ((ITakesScreenshot)chromeDriver).GetScreenshot();
-                    screenshot.SaveAsFile(fileName, ScreenshotImageFormat.Png);
+                    screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
                 }
             }
 
