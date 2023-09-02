@@ -42,13 +42,15 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             Console.WriteLine($"Downloading and extracting chrome");
             var localChrome = ChromeOrDriverFactory.DownloadAndExtract(stableVersion.Major, ChromeOrDriverType.Chrome);
 
-            ChromeDriverService svc = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
-            var artifactFolder = Environment.GetEnvironmentVariable("$SYSTEM_ARTIFACTSDIRECTORY");
+            ChromeDriverService driverService = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
+            var artifactFolder = Environment.GetEnvironmentVariable("SYSTEM_ARTIFACTSDIRECTORY");
             if (!string.IsNullOrEmpty(artifactFolder))
             {
-                svc.LogPath = Path.Combine(artifactFolder, $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log");
-                svc.EnableAppendLog = true;
-                svc.EnableVerboseLogging = true;
+                var logFile = $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log";
+                DebugConsole.WriteLine($"LOG TO: [{logFile}]");
+                driverService.LogPath = Path.Combine(artifactFolder, logFile);
+                driverService.EnableAppendLog = true;
+                driverService.EnableVerboseLogging = true;
             }
 
 
@@ -70,8 +72,8 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             options.AddArguments("force-device-scale-factor=2.0");
             options.AddArguments("high-dpi-support=2.0");
 
-            using (svc)
-            using (var chromeDriver = new ChromeDriver(svc, options))
+            using (driverService)
+            using (var chromeDriver = new ChromeDriver(driverService, options))
             {
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
                 chromeDriver.Manage().Window.Size = new Size(1400, 1000);
