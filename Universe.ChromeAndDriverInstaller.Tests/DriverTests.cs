@@ -81,11 +81,20 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                     var fileName = Path.Combine(dir, "what-is-my-browser");
                     Console.WriteLine($"Saving Screenshot as [{fileName}]");
                     Screenshot screenshot = ((ITakesScreenshot)chromeDriver).GetScreenshot();
-                    File.WriteAllBytes(fileName + ".bin", screenshot.AsByteArray); 
+                    var rawScreenshot = screenshot.AsByteArray;
+                    Console.WriteLine($"First {GetFirstEightBytes(rawScreenshot)}");
+                    File.WriteAllBytes(fileName + ".bin", rawScreenshot);
                     screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
                 }
             }
 
+        }
+
+        // PNG: 137 80 78 71 13 10 26 10
+        static string GetFirstEightBytes(byte[] arr)
+        {
+            if (arr == null) return "null";
+            return string.Join(" ", arr.Take(8));
         }
     }
 }
