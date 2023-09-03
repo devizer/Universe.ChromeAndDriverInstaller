@@ -18,8 +18,10 @@ jobs:
   strategy:
     maxParallel: 4
     matrix:
-      'Grab Chromium on Ubuntu 20.04':
-        IMAGE: 'ubuntu-20.04'
+      'Grab Chromium on Mac OS':
+        IMAGE: 'macos-12'
+      # 'Grab Chromium on Ubuntu 20.04':
+      #  IMAGE: 'ubuntu-20.04'
 
   steps:
 
