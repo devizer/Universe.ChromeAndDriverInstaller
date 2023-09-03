@@ -19,6 +19,9 @@ jobs:
   strategy:
     maxParallel: 4
     matrix:
+      'on Mac OS (Max 300)':
+        IMAGE: 'macos-12'
+        MAX_PARSED_PAGES: '300'
       'on Mac OS':
         IMAGE: 'macos-12'
       'on Ubuntu 22.04':
