@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text;
 using GrabChromiumLinks;
@@ -9,6 +10,8 @@ using Universe.ChromeAndDriverInstaller;
 public class Program
 {
     private const string MAX_PARSED_PAGES = "MAX_PARSED_PAGES";
+
+    private static ThreadLocal<HtmlLinksParser> LinksParser = new ThreadLocal<HtmlLinksParser>();
 
     public static void Main()
     {
@@ -31,44 +34,48 @@ public class Program
             parsedFiles.Add(parsed);
         }
 
-        bool IsValidLinks(List<DownloadLink> links)
-        {
-            return links.Any(x => x.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
-        }
 
-        string FormatMilliseconds(long milliseconds)
-        {
-            return new DateTime().AddMilliseconds(milliseconds).ToString("HH:mm:ss");
-        }
-
-        using HtmlLinksParser linksParser = new HtmlLinksParser();
         int total = parsedFiles.SelectMany(x => x.Rows).Count(), current = 0;
         Console.WriteLine($"Total Html Pages: {total}");
         Stopwatch sw = Stopwatch.StartNew();
         var maxParsedPages = GetMaxParsedPages();
-        foreach (SourceRow sourceRow in parsedFiles.SelectMany(x => x.Rows).OrderByDescending(x => x.RawVersion.TryParseVersion()))
+        var orderedSourceRows = parsedFiles.SelectMany(x => x.Rows).OrderByDescending(x => x.RawVersion.TryParseVersion()).ToList();
+        // foreach (SourceRow sourceRow in orderedSourceRows)
+        int numThreads = Math.Min(3, Environment.ProcessorCount);
+        Console.WriteLine($"Parsing Threads: {numThreads}");
+        ParallelOptions po = new ParallelOptions() { MaxDegreeOfParallelism = numThreads};
+        Parallel.ForEach(orderedSourceRows, po, sourceRow =>
         {
             string totalElapsed = "";
-            ++current;
-            if (maxParsedPages.HasValue && current > maxParsedPages.Value) break;
-            long msec = sw.ElapsedMilliseconds;
-            if (msec > 0) totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - current) * 1.0d / current) * msec)}";
-            Console.WriteLine($"{current}/{total} {totalElapsed} v{sourceRow.RawVersion} for {sourceRow.Platform} {sourceRow.HtmlLink}");
-            var links = linksParser.ParseLinks(sourceRow.HtmlLink, (driver, actualLinks) =>
+            Interlocked.Increment(ref current);
+            if (!maxParsedPages.HasValue || current <= maxParsedPages.Value)
             {
-                Thread.Sleep(1);
-                return IsValidLinks(actualLinks);
-            });
+                long msec = sw.ElapsedMilliseconds;
+                if (msec > 0)
+                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - current) * 1.0d / current) * msec)}";
 
-            // chrom[ium]?
-            var filteredLinks = links.Where(x => x.Name.IndexOf(".zip", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
-            foreach (var link in filteredLinks)
-            {
-                Console.WriteLine($"  {link.Name}: {link.Url}");
-                sourceRow.DownloadLinks.Add(link);
+                var progresHuman = $"{current}/{total} {totalElapsed} v{sourceRow.RawVersion} for {sourceRow.Platform} {sourceRow.HtmlLink}";
+                Console.WriteLine($"→→ {progresHuman}");
+                HtmlLinksParser linksParser = GetLinksParser();
+
+                var links = linksParser.ParseLinks(sourceRow.HtmlLink, (driver, actualLinks) =>
+                {
+                    Thread.Sleep(1);
+                    return IsValidLinks(actualLinks);
+                });
+
+                // chrom[ium]?
+                var filteredLinks = links.Where(x => x.Name.IndexOf(".zip", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                sourceRow.DownloadLinks.AddRange(filteredLinks);
+                
+                var humanLinks = string.Join(Environment.NewLine, filteredLinks.Select(x => $"  {x}"));
+                Console.WriteLine($"Completed v{sourceRow.RawVersion} for {sourceRow.Platform}" + Environment.NewLine + humanLinks);
             }
-        }
+        });
 
+        Console.WriteLine("FINISH. Serialize Results");
+        foreach (var htmlLinksParser in LinksParsers)
+            htmlLinksParser.Dispose();
 
         string resultJson = ChromiumMetadataJsonWriter.Serialize(parsedFiles.ToArray());
         string fileName = $"chromium-and-drivers{(GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "")}.json";
@@ -82,6 +89,29 @@ public class Program
 
         return null;
     }
+
+    static bool IsValidLinks(List<DownloadLink> links)
+    {
+        return links.Any(x => x.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase));
+    }
+
+    static string FormatMilliseconds(long milliseconds)
+    {
+        return new DateTime().AddMilliseconds(milliseconds).ToString("HH:mm:ss");
+    }
+
+    private static ConcurrentBag<HtmlLinksParser> LinksParsers = new ConcurrentBag<HtmlLinksParser>();
+    static HtmlLinksParser GetLinksParser()
+    {
+        if (LinksParser.Value == null)
+        {
+            var next = LinksParser.Value = new HtmlLinksParser();
+            LinksParsers.Add(next);
+        }
+
+        return LinksParser.Value;
+    }
+
 }
 
 

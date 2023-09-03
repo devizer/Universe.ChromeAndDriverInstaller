@@ -17,6 +17,11 @@ namespace GrabChromiumLinks.External
     {
         public string Name;
         public string Url;
+
+        public override string ToString()
+        {
+            return $"{Name}: {Url}";
+        }
     }
 
     public class SourceRow
