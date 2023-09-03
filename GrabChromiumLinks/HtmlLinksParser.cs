@@ -24,6 +24,7 @@ namespace GrabChromiumLinks
             var (driverService, chromeDriver) = OpenBrowser();
 
 
+            Stopwatch startAt = Stopwatch.StartNew();
             chromeDriver.Navigate().GoToUrl(htmlUrl);
             // Thread.Sleep(777);
 
@@ -45,14 +46,15 @@ namespace GrabChromiumLinks
                 if (isReady(chromeDriver, ret))
                 {
                     consequentlySuccess++;
-                    if (consequentlySuccess >= 2)
+                    int requiredSuccess = TinyCrossInfo.IsWindows ? 2 : 1;
+                    if (consequentlySuccess >= requiredSuccess)
                     {
-                        Console.WriteLine($"Success number {consequentlySuccess} (total {retries}) for {htmlUrl}");
+                        Console.WriteLine($"Success number {consequentlySuccess} (total {retries}, {startAt.Elapsed.TotalSeconds:n1}) for {htmlUrl}");
                         return ret;
                     }
                     else
                     {
-                        Console.WriteLine($"First success number {consequentlySuccess} (total {retries}) for {htmlUrl}");
+                        Console.WriteLine($"First success number {consequentlySuccess} (total {retries}, {startAt.Elapsed.TotalSeconds:n1}) for {htmlUrl}");
                     }
 
                     continue;
