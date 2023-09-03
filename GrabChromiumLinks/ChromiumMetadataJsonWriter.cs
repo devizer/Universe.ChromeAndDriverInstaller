@@ -17,6 +17,8 @@ public class ChromiumMetadataJsonWriter
         var allRows = jsonFiles.SelectMany(x => x.Rows);
         var uniqueVersions = allRows.ToDistinct(x => x.RawVersion);
 
+        HashSet<string> unknownV8Set = new HashSet<string>();
+
         foreach (var versionAndList in uniqueVersions.OrderByDescending(x => x.Key.TryParseVersion()))
         {
             var version = versionAndList.Key;
@@ -25,8 +27,12 @@ public class ChromiumMetadataJsonWriter
             var platformsByVersion = listByVersion.ToDistinct(x => x.Platform);
 
             JObject jPlatforms = JObject.FromObject(new { });
-            string v8Ver = platformsByVersion.Values.SelectMany(x => x).FirstOrDefault(x => x.V8Version != null)?.V8Version;
-            if (v8Ver != null) jPlatforms.Add("v8version", v8Ver);
+            string v8Ver = platformsByVersion.Values.SelectMany(x => x).FirstOrDefault(x => x.V8Version != null && x.RawVersion == version)?.V8Version;
+            if (v8Ver != null)
+                jPlatforms.Add("v8version", v8Ver);
+            else
+                unknownV8Set.Add(version);
+
             foreach (var platformByVersion in platformsByVersion.Keys.OrderBy(x => x.ToString()))
             {
                 // JObject jPlatformValue = JObject.FromObject(new { });
@@ -40,6 +46,9 @@ public class ChromiumMetadataJsonWriter
             var humanPlatformList = string.Join(", ", platformsByVersion.Select(x => x.Key.ToString()));
             ret.Add(version, jPlatforms);
         }
+
+        if (unknownV8Set.Count > 0)
+            DebugConsole.WriteLine($"WARNING: Unknown V8 version for the list: {string.Join(", ", unknownV8Set.OrderBy(x => x.TryParseVersion()))}");
 
         return ret.ToString();
     }
