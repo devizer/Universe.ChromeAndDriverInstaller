@@ -69,8 +69,7 @@ jobs:
        set -eu; set -o pipefail
        cd GrabChromiumLinks
        dotnet run -f net6.0 | tee $SYSTEM_ARTIFACTSDIRECTORY/run.log
-       cd bin/Debug/net6.0
-       cp -f chromium*.json $SYSTEM_ARTIFACTSDIRECTORY/
+       cp -f chromium*.json $SYSTEM_ARTIFACTSDIRECTORY/ || true
     condition: succeededOrFailed()
     displayName: 'Grab'
 

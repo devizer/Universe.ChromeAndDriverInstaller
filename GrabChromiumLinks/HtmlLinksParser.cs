@@ -81,7 +81,7 @@ namespace GrabChromiumLinks
             ChromeDriverService driverService = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath),
                 Path.GetFileName(localDriver.ExecutableFullPath));
             var artifactFolder = Environment.GetEnvironmentVariable("SYSTEM_ARTIFACTSDIRECTORY");
-            if (!string.IsNullOrEmpty(artifactFolder))
+            if (false && !string.IsNullOrEmpty(artifactFolder))
             {
                 var logFile = Path.Combine(artifactFolder, $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log");
                 DebugConsole.WriteLine($"LOG TO: [{logFile}]");
@@ -107,6 +107,7 @@ namespace GrabChromiumLinks
                 // options.AddArgument("--disable-dev-shm-usage");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--headless");
+                // options.AddArgument("user-data-dir=W:\\Temp\\SeleniumProfile");
             }
 
             options.AddArguments("force-device-scale-factor=2.0");
