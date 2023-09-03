@@ -1,0 +1,97 @@
+variables:
+  NUGET_VERSION: 0.42
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - '**'
+
+jobs:
+
+- job: GrabChromium
+  pool:
+    vmImage: '$(IMAGE)'
+  timeoutInMinutes: 44
+  strategy:
+    maxParallel: 4
+    matrix:
+      'Grab Chromium on Ubuntu 20.04':
+        IMAGE: 'ubuntu-20.04'
+
+  steps:
+
+
+  - bash: |
+       set -eu; set -o pipefail;
+       export RESET_FOLDERS_TO_RAID="/tmp/GCD" 
+       # export LOOP_DIRECT_IO="off"
+       mkdir -p "$RESET_FOLDERS_TO_RAID"; 
+       url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+       df -h -T
+       sudo chown $USER /tmp/GCD
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Raid Compressed: /tmp/GCD'
+
+  - bash: |
+       if [[ "${AGENT_OS:-}" != Windows ]]; then df -h -T 2>nul || df -h; fi
+
+       export DOTNET_VERSIONS="5.0 6.0 7.0"
+       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; test -s /usr/share/dotnet/dotnet && sudo ln -f -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet; test -s /usr/local/share/dotnet/dotnet && sudo ln -f -s /usr/local/share/dotnet/dotnet /usr/local/bin/dotnet; 
+       dotnet --info
+       Say "Installing GDI+"
+       sudo apt-get install -y libgdiplus || brew install mono-libgdiplus || true
+    condition: succeededOrFailed()
+    displayName: 'Bootstrap .NET SDK'
+
+  - bash: |
+       cd GrabChromiumLinks
+       dotnet restore || dotnet restore --disable-parallel
+    condition: succeededOrFailed()
+    displayName: 'Restore'
+
+  - bash: |
+       set -eu; set -o pipefail
+       cd GrabChromiumLinks
+       dotnet run -f net6.0 | tee $SYSTEM_ARTIFACTSDIRECTORY/run.log
+       cd bin/Debug/net6.0
+       cp -f chromium*.json $SYSTEM_ARTIFACTSDIRECTORY/
+    condition: succeededOrFailed()
+    displayName: 'Grab'
+
+  - bash: |
+      set -eu; set -o pipefail
+      d=$PWD
+      pushd "$(System.ARTIFACTSDIRECTORY)"
+      7z a -mx=1 -ms=on -mqs=on "Source-$(Agent.JobName).7z" "$d"
+      popd
+    condition: succeededOrFailed()
+    displayName: 'Prepare Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: 'Publish Test Results'
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+      testRunTitle: 'All the tests for $(Agent.JobName)'
+
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: cobertura
+      failIfCoverageEmpty: false # Optional      
+      summaryFileLocation: '**/coverage.cobertura.xml'
+
+  - bash: 'Show-System-Stat; sudo df -h -T;'
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Linux System Statistic'

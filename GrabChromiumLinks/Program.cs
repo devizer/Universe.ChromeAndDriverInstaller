@@ -8,6 +8,8 @@ using Universe.ChromeAndDriverInstaller;
 
 public class Program
 {
+    private const string MAX_PARSED_PAGES = "MAX_PARSED_PAGES";
+
     public static void Main()
     {
         var metaFiles = new[]
@@ -39,7 +41,7 @@ public class Program
             return new DateTime().AddMilliseconds(milliseconds).ToString("HH:mm:ss");
         }
 
-        HtmlLinksParser linksParser = new HtmlLinksParser();
+        using HtmlLinksParser linksParser = new HtmlLinksParser();
         int total = parsedFiles.SelectMany(x => x.Rows).Count(), current = 0;
         Console.WriteLine($"Total Html Pages: {total}");
         Stopwatch sw = Stopwatch.StartNew();
@@ -58,7 +60,8 @@ public class Program
                 return IsValidLinks(actualLinks);
             });
 
-            var filteredLinks = links.Where(x => x.Name.IndexOf("chrom", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+            // chrom[ium]?
+            var filteredLinks = links.Where(x => x.Name.IndexOf(".zip", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
             foreach (var link in filteredLinks)
             {
                 Console.WriteLine($"  {link.Name}: {link.Url}");
@@ -66,13 +69,15 @@ public class Program
             }
         }
 
+
         string resultJson = ChromiumMetadataJsonWriter.Serialize(parsedFiles.ToArray());
-        File.WriteAllText("chromium-and-drivers.json", resultJson, new UTF8Encoding(false));
+        string fileName = $"chromium-and-drivers{(GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "")}.json";
+        File.WriteAllText(fileName, resultJson, new UTF8Encoding(false));
     }
 
     static int? GetMaxParsedPages()
     {
-        if (Int32.TryParse(Environment.GetEnvironmentVariable("MAX_PARSED_PAGES"), out var maxParsedPages))
+        if (Int32.TryParse(Environment.GetEnvironmentVariable(MAX_PARSED_PAGES), out var maxParsedPages))
             return maxParsedPages > 0 ? maxParsedPages : null;
 
         return null;

@@ -1,4 +1,5 @@
 ﻿using GrabChromiumLinks.External;
+using Newtonsoft.Json.Linq;
 
 namespace GrabChromiumLinks;
 
@@ -35,6 +36,19 @@ public static class DictionaryExtensions
         }
 
         return ret;
+    }
+
+    public static JObject AsJObject(this IEnumerable<DownloadLink> downloadLinks)
+    {
+        JObject ret = JObject.FromObject(new {});
+        foreach (var downloadLink in downloadLinks)
+        {
+            ret.Add(downloadLink.Name, downloadLink.Url);
+        }
+
+        return ret;
+        
+
     }
 
 

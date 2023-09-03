@@ -25,12 +25,14 @@ public class ChromiumMetadataJsonWriter
             var platformsByVersion = listByVersion.ToDistinct(x => x.Platform);
 
             JObject jPlatform = JObject.FromObject(new { });
-            foreach (var platformByVersion in platformsByVersion.Keys.OrderBy(x => x))
+            foreach (var platformByVersion in platformsByVersion.Keys.OrderBy(x => x.ToString()))
             {
                 // JObject jPlatformValue = JObject.FromObject(new { });
                 var links = platformsByVersion[platformByVersion];
                 if (links.Count > 1) throw new InvalidOperationException("links.Count > 1");
-                JObject jPlatformValue = JObject.FromObject(new {html = links.First().HtmlLink});
+                
+                // JObject jPlatformValue = JObject.FromObject(new {html = links.First().HtmlLink});
+                JObject jPlatformValue = JObject.FromObject(links.First().DownloadLinks.AsJObject());
                 jPlatform.Add(platformByVersion.ToString(), jPlatformValue);
             }
             var humanPlatformList = string.Join(", ", platformsByVersion.Select(x => x.Key.ToString()));
