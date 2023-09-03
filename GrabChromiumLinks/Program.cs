@@ -52,7 +52,7 @@ public class Program
             {
                 long msec = sw.ElapsedMilliseconds;
                 if (msec > 0)
-                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - current) * 1.0d / current) * msec)}";
+                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - current) * 1.0d / (double)current * (double)msec))}";
 
                 var progresHuman = $"{current}/{total} {totalElapsed} v{sourceRow.RawVersion} for {sourceRow.Platform} {sourceRow.HtmlLink}";
                 Console.WriteLine($"→→ {progresHuman}");
