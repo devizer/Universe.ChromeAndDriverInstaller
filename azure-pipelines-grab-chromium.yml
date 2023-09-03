@@ -14,7 +14,7 @@ jobs:
 - job: GrabChromium
   pool:
     vmImage: '$(IMAGE)'
-  timeoutInMinutes: 44
+  timeoutInMinutes: 300
   strategy:
     maxParallel: 4
     matrix:
@@ -23,6 +23,14 @@ jobs:
 
   steps:
 
+
+  - pwsh: |
+      Install-Module Platform-Info -Force
+
+      Write-Host "CPU: $(Get-Cpu-Name)"
+      Write-Host "Platform: $(Get-Os-Platform)"
+      Write-Host "Memory $((Get-Memory-Info).Description)"
+    displayName: 'Bootstrap pwsh'
 
   - bash: |
        set -eu; set -o pipefail;
