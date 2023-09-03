@@ -12,16 +12,17 @@ trigger:
 jobs:
 
 - job: GrabChromium
+  displayName: 'Grab Chromium'
   pool:
     vmImage: '$(IMAGE)'
   timeoutInMinutes: 300
   strategy:
     maxParallel: 4
     matrix:
-      'Grab Chromium on Mac OS':
+      'on Mac OS':
         IMAGE: 'macos-12'
-      # 'Grab Chromium on Ubuntu 20.04':
-      #  IMAGE: 'ubuntu-20.04'
+      'on Ubuntu 22.04':
+        IMAGE: 'ubuntu-22.04'
 
   steps:
 
