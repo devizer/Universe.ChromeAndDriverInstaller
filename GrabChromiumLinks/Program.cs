@@ -47,14 +47,20 @@ public class Program
         Parallel.ForEach(orderedSourceRows, po, sourceRow =>
         {
             string totalElapsed = "";
-            Interlocked.Increment(ref current);
-            if (!maxParsedPages.HasValue || current <= maxParsedPages.Value)
+            var theCurrent = Interlocked.Increment(ref current);
+            if (!maxParsedPages.HasValue || theCurrent <= maxParsedPages.Value)
             {
                 long msec = sw.ElapsedMilliseconds;
                 if (msec > 0)
-                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - current) * 1.0d / (double)current * (double)msec))}";
+                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - theCurrent) * 1.0d / (double)theCurrent * (double)msec))}";
 
-                var progresHuman = $"{current}/{total} {totalElapsed} v{sourceRow.RawVersion} for {sourceRow.Platform} {sourceRow.HtmlLink}";
+                if (sourceRow.V8Version == null)
+                {
+                    sourceRow.V8Version = CachedV8Versions.GetCachedV8Version(sourceRow.RawVersion);
+                    Console.WriteLine($"V8 Version of {sourceRow.RawVersion} is '{sourceRow.V8Version}'");
+                }
+
+                var progresHuman = $"{theCurrent}/{total} {totalElapsed} v{sourceRow.RawVersion} for {sourceRow.Platform} {sourceRow.HtmlLink}";
                 Console.WriteLine($"→→ {progresHuman}");
                 HtmlLinksParser linksParser = GetLinksParser();
 

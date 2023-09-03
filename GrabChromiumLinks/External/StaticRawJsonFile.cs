@@ -31,6 +31,7 @@ namespace GrabChromiumLinks.External
         public ChromeAndDriverPlatform Platform { get; set; }
 
         public List<DownloadLink> DownloadLinks { get; set; } = new List<DownloadLink>();
+        public string V8Version { get; set; }
 
         public Version Version => RawVersion.TryParseVersion();
     }

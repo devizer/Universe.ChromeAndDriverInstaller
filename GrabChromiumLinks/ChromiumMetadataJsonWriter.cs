@@ -24,7 +24,9 @@ public class ChromiumMetadataJsonWriter
 
             var platformsByVersion = listByVersion.ToDistinct(x => x.Platform);
 
-            JObject jPlatform = JObject.FromObject(new { });
+            JObject jPlatforms = JObject.FromObject(new { });
+            string v8Ver = platformsByVersion.Values.SelectMany(x => x).FirstOrDefault(x => x.V8Version != null)?.V8Version;
+            if (v8Ver != null) jPlatforms.Add("v8version", v8Ver);
             foreach (var platformByVersion in platformsByVersion.Keys.OrderBy(x => x.ToString()))
             {
                 // JObject jPlatformValue = JObject.FromObject(new { });
@@ -33,10 +35,10 @@ public class ChromiumMetadataJsonWriter
                 
                 // JObject jPlatformValue = JObject.FromObject(new {html = links.First().HtmlLink});
                 JObject jPlatformValue = JObject.FromObject(links.First().DownloadLinks.AsJObject());
-                jPlatform.Add(platformByVersion.ToString(), jPlatformValue);
+                jPlatforms.Add(platformByVersion.ToString(), jPlatformValue);
             }
             var humanPlatformList = string.Join(", ", platformsByVersion.Select(x => x.Key.ToString()));
-            ret.Add(version, jPlatform);
+            ret.Add(version, jPlatforms);
         }
 
         return ret.ToString();
