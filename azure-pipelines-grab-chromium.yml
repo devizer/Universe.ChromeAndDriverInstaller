@@ -32,7 +32,7 @@ jobs:
   - pwsh: |
       Install-Module Platform-Info -Force
 
-      Write-Host "CPU: $(Get-Cpu-Name)"
+      Write-Host "CPU: $(Get-Cpu-Name), $([System.Environment]::ProcessorCount) Cores"
       Write-Host "Platform: $(Get-Os-Platform)"
       Write-Host "Memory $((Get-Memory-Info).Description)"
     displayName: 'Bootstrap pwsh'
