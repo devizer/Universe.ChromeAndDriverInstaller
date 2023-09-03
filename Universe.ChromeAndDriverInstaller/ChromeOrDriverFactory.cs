@@ -55,7 +55,6 @@ namespace Universe.ChromeAndDriverInstaller
 
                     var zipFileName = Path.Combine(tempDir, "Zips", uniqueName + ".zip");
                     var extractDir = Path.Combine(tempDir, uniqueName);
-                    DebugConsole.WriteLine($"Extracting {metadataEntry} into [{extractDir}]");
 
                     var doneAnchorFile = Path.Combine(extractDir, uniqueName + ".done");
                     string exeFullPath = null;
@@ -66,8 +65,9 @@ namespace Universe.ChromeAndDriverInstaller
 
                         DebugConsole.WriteLine($"Downloading {metadataEntry}");
                         new WebDownloader().DownloadFile(metadataEntry.Url, zipFileName, retryCount: 3);
+                        DebugConsole.WriteLine($"Extracting '{extractDir}' for {metadataEntry}");
                         exeFullPath = ChromeOrDriverExtractor.Extract(metadataEntry, zipFileName, extractDir);
-                        DebugConsole.WriteLine($"{metadataEntry}: {Environment.NewLine}{exeFullPath}");
+                        DebugConsole.WriteLine($"Executable is '{exeFullPath}' for {metadataEntry}");
                         using (FileStream fs = new FileStream(doneAnchorFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         using (StreamWriter wr = new StreamWriter(fs, new UTF8Encoding(false)))
                         {
@@ -75,7 +75,7 @@ namespace Universe.ChromeAndDriverInstaller
                         }
                     }
                     else {
-                        DebugConsole.WriteLine($"Reusing existing binary [{exeFullPath}]");
+                        DebugConsole.WriteLine($"Reusing existing binary '{exeFullPath} for {metadataEntry}");
                     }
 
                     var ret = new ChromeOrDriverResult()
