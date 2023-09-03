@@ -46,19 +46,22 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             var artifactFolder = Environment.GetEnvironmentVariable("SYSTEM_ARTIFACTSDIRECTORY");
             if (!string.IsNullOrEmpty(artifactFolder))
             {
-                var logFile = $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log";
+                var logFile = Path.Combine(artifactFolder, $"chrome-driver {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.log");
                 DebugConsole.WriteLine($"LOG TO: [{logFile}]");
-                driverService.LogPath = Path.Combine(artifactFolder, logFile);
+                driverService.LogPath = logFile;
                 driverService.EnableAppendLog = true;
                 driverService.EnableVerboseLogging = true;
             }
 
 
+            // C:\Apps\Chromium-116.0.5841.1-32bit\chrome.exe
             // TODO: https://stackoverflow.com/a/50642913
             // --disable-extensions, --disable-gpu, --disable-dev-shm-usage, --no-sandbox
             ChromeOptions options = new ChromeOptions()
             {
                 BinaryLocation = localChrome.ExecutableFullPath,
+                // BinaryLocation = @"C:\Apps\Chromium-116.0.5841.1-32bit\chrome.exe",
+                AcceptInsecureCertificates = true,
             };
             if (!TinyCrossInfo.IsWindows)
             {
@@ -81,6 +84,10 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
                 var docTitle = chromeDriver.Title;
                 Console.WriteLine($"Got Document Title: '{docTitle}'");
+
+                Console.WriteLine($"chromeDriver.Capabilities Type: '{chromeDriver.Capabilities.GetType()}'");
+                Console.WriteLine(chromeDriver.Capabilities.GetCapability("PlatformName"));
+
 
                 if (needScreenshot)
                 {
