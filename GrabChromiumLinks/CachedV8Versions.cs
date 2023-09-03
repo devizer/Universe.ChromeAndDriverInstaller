@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GrabChromiumLinks.Links;
 using Universe.ChromeAndDriverInstaller;
 
 namespace GrabChromiumLinks
@@ -16,8 +17,15 @@ namespace GrabChromiumLinks
         {
             if (!Cache.TryGetValue(version, out var v8Version))
             {
-                v8Version = DependenciesClient.GetChromiumDependenciesMetadata(version)?.V8Version;
-                Cache[version] = v8Version;
+                try
+                {
+                    v8Version = DependenciesClient.GetChromiumDependenciesMetadata(version)?.V8Version;
+                    Cache[version] = v8Version;
+                }
+                catch(Exception ex)
+                {
+                    DebugConsole.WriteLine($"WARNING! V8 Version is unavailable. {ex.GetLegacyExceptionDigest()}");
+                }
             }
 
             return v8Version;
