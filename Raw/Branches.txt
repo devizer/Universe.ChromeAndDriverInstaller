@@ -4,6 +4,8 @@ https://vikyd.github.io/download-chromium-history-version/#/
 https://stackoverflow.com/a/54927497
 https://omahaproxy.appspot.com/
 https://omahaproxy.appspot.com/deps.json?version=95.0.4638.74
+https://omahaproxy.appspot.com/deps.json?version=51.0.2702.2
+
 69.0.3497.81 
 49.0.2623
 89.0.4389.72

@@ -29,6 +29,7 @@ namespace GrabChromiumLinks
 
             Stopwatch sw = Stopwatch.StartNew();
             int retries = 0;
+            int consequentlySuccess = 0;
             while (true)
             {
                 retries++;
@@ -43,14 +44,26 @@ namespace GrabChromiumLinks
 
                 if (isReady(chromeDriver, ret))
                 {
-                    Console.WriteLine($"Success by {retries} for {htmlUrl}");
-                    return ret;
+                    consequentlySuccess++;
+                    if (consequentlySuccess >= 2)
+                    {
+                        Console.WriteLine($"Success number {consequentlySuccess} (total {retries}) for {htmlUrl}");
+                        return ret;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"First success number {consequentlySuccess} (total {retries}) for {htmlUrl}");
+                    }
+
+                    continue;
                 }
-                if (sw.Elapsed.TotalSeconds > 30)
+                else if (sw.Elapsed.TotalSeconds > 30)
                 {
                     Console.WriteLine($"WARNING! TIMEOUT FOR {htmlUrl}");
                     return null;
                 }
+
+                // consequentlySuccess = 0;
             }
         }
 
