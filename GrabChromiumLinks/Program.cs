@@ -52,7 +52,8 @@ public class Program
             {
                 long msec = sw.ElapsedMilliseconds;
                 if (msec > 0)
-                    totalElapsed = $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - theCurrent) * 1.0d / (double)theCurrent * (double)msec))}";
+                    totalElapsed =
+                        $"total {FormatMilliseconds(msec)}, elapsed {FormatMilliseconds((long)((total - theCurrent) * 1.0d / (double)theCurrent * (double)msec))}";
 
                 if (sourceRow.V8Version == null)
                 {
@@ -70,10 +71,12 @@ public class Program
                     return IsValidLinks(actualLinks);
                 });
 
+                if (links == null) throw new Exception($"TIMEOUT for {sourceRow.HtmlLink}");
+
                 // chrom[ium]?
                 var filteredLinks = links.Where(x => x.Name.IndexOf(".zip", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
                 sourceRow.DownloadLinks.AddRange(filteredLinks);
-                
+
                 var humanLinks = string.Join(Environment.NewLine, filteredLinks.Select(x => $"  {x}"));
                 Console.WriteLine($"Completed v{sourceRow.RawVersion} for {sourceRow.Platform}" + Environment.NewLine + humanLinks);
             }
