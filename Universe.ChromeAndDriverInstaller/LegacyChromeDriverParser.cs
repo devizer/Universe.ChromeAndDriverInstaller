@@ -21,7 +21,7 @@ namespace Universe.ChromeAndDriverInstaller
             var lines = raw.Split(new[] { '\r', '\n' }).Where(x => !string.IsNullOrEmpty(x));
             foreach (var url in lines)
             {
-                if (url.EndsWith("_linux32.zip", StringComparison.OrdinalIgnoreCase)) continue;
+                // if (url.EndsWith("_linux32.zip", StringComparison.OrdinalIgnoreCase)) continue;
                 if (url.EndsWith("_mac32.zip", StringComparison.OrdinalIgnoreCase)) continue;
                 if (url.IndexOf("_debug", StringComparison.OrdinalIgnoreCase) >= 0) continue;
 
@@ -57,6 +57,7 @@ namespace Universe.ChromeAndDriverInstaller
             if (key == "M1") return "MacArm64";
             if (key == "Mac64") return "MacX64";
             if (key == "Arm64") return "MacArm64";
+            if (key == "Linux32") return "Linux32";
             return $"" + key;
         }
 

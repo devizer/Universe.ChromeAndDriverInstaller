@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,10 @@ namespace LegacyParser
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Parse 'LegacyDriverNotes' folder");
+            LegacyDriverNotesParser.Parse();
+
+            Console.WriteLine("Parse 'Legacy Formatted.xml'");
             var doc = LoadRawXml();
             LegacyXmlParser.Parse(doc);
         }
