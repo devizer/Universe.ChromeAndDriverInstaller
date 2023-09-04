@@ -10,11 +10,10 @@ namespace GrabChromiumLinks;
 
 public class ChromiumMetadataJsonWriter
 {
-    public static string Serialize(StaticRawJsonFile[] jsonFiles)
+    public static string Serialize(IEnumerable<SourceRow> allRows)
     {
         JObject ret = new JObject();
 
-        var allRows = jsonFiles.SelectMany(x => x.Rows);
         var uniqueVersions = allRows.ToDistinct(x => x.RawVersion);
 
         HashSet<string> unknownV8Set = new HashSet<string>();
@@ -50,8 +49,9 @@ public class ChromiumMetadataJsonWriter
         if (unknownV8Set.Count > 0)
             DebugConsole.WriteLine($"WARNING: Unknown V8 version for the list: {string.Join(", ", unknownV8Set.OrderBy(x => x.TryParseVersion()))}");
 
-        return ret.ToString();
+        return JsonExtensions.Format(ret, false);
     }
+
 
         
         

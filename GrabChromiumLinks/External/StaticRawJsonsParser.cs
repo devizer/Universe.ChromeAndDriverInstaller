@@ -21,12 +21,9 @@ namespace GrabChromiumLinks.External
             }
         }
 
-        public static StaticRawJsonFile ParseFile(string jsonString, ChromeAndDriverPlatform platform)
+        public static List<SourceRow> ParseFile(string jsonString, ChromeAndDriverPlatform platform)
         {
-            StaticRawJsonFile ret = new StaticRawJsonFile()
-            {
-                Platform = platform,
-            };
+            var ret = new List<SourceRow>();
 
             JObject jsonRoot = JObject.Parse(jsonString);
             foreach (var pair in jsonRoot)
@@ -40,7 +37,7 @@ namespace GrabChromiumLinks.External
 
                 if (!string.IsNullOrEmpty(row.HtmlLink) && !string.IsNullOrEmpty(row.RawVersion))
                 {
-                    ret.Rows.Add(row);
+                    ret.Add(row);
                 }
             }
 

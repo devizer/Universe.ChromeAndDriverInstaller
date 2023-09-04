@@ -81,16 +81,17 @@ namespace GrabChromiumLinks
 
             return (DriverService, Driver);
         }
+
         private (ChromeDriverService, ChromeDriver) OpenBrowser_Impl()
         {
             var knownVersions = new LastKnownGoodVersionsClient().ReadVersions();
             var stableVersion = knownVersions.TryGetStableVersion();
-            Console.WriteLine($"Chrome Stable Version: {stableVersion}");
+            Console.WriteLine($"Chrome Stable Version: {stableVersion}. Download and Extract ...");
 
-            Console.WriteLine($"Downloading and extracting driver");
+            // Console.WriteLine($"Downloading and extracting driver");
             var localDriver = ChromeOrDriverFactory.DownloadAndExtract(stableVersion.Major, ChromeOrDriverType.Driver);
 
-            Console.WriteLine($"Downloading and extracting chrome");
+            // DebugConsole.WriteLine($"Downloading and extracting chrome");
             var localChrome = ChromeOrDriverFactory.DownloadAndExtract(stableVersion.Major, ChromeOrDriverType.Chrome);
 
             ChromeDriverService driverService = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath),

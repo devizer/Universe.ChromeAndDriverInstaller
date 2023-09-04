@@ -25,21 +25,21 @@ public class Program
             new { Key = "Win_x64", Plaform = ChromeAndDriverPlatform.Win64 },
         };
 
-        List<StaticRawJsonFile> parsedFiles = new List<StaticRawJsonFile>();
+        List<SourceRow> allRows = new List<SourceRow>();
         foreach (var metaFile in metaFiles)
         {
             Console.WriteLine($"Parsing {metaFile.Key}");
             string json = StaticRawJsonsParser.ReadFile(metaFile.Key);
-            StaticRawJsonFile parsed = StaticRawJsonsParser.ParseFile(json, metaFile.Plaform);
-            parsedFiles.Add(parsed);
+            var parsedNewRows = StaticRawJsonsParser.ParseFile(json, metaFile.Plaform);
+            allRows.AddRange(parsedNewRows);
         }
 
 
-        int total = parsedFiles.SelectMany(x => x.Rows).Count(), current = 0;
+        int total = allRows.Count, current = 0;
         Console.WriteLine($"Total Html Pages: {total}");
         Stopwatch sw = Stopwatch.StartNew();
         var maxParsedPages = GetMaxParsedPages();
-        var orderedSourceRows = parsedFiles.SelectMany(x => x.Rows).OrderByDescending(x => x.RawVersion.TryParseVersion()).ToList();
+        var orderedSourceRows = allRows.OrderByDescending(x => x.RawVersion.TryParseVersion()).ToList();
         // foreach (SourceRow sourceRow in orderedSourceRows)
         int numThreads = Math.Min(3, Environment.ProcessorCount);
         Console.WriteLine($"Parsing Threads: {numThreads}");
@@ -83,8 +83,8 @@ public class Program
         foreach (var htmlLinksParser in LinksParsers)
             htmlLinksParser.Dispose();
 
-        string resultJson = ChromiumMetadataJsonWriter.Serialize(parsedFiles.ToArray());
-        string fileName = $"chromium-and-drivers{(GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "")}.json";
+        string resultJson = ChromiumMetadataJsonWriter.Serialize(allRows);
+        string fileName = $"chromium-and-drivers-full{(GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "")}.json";
         File.WriteAllText(fileName, resultJson, new UTF8Encoding(false));
     }
 
