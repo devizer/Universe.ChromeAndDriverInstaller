@@ -120,14 +120,17 @@ namespace GrabChromiumLinks
             {
                 // options.AddArgument("--disable-extensions");
                 options.AddArgument("--disable-gpu");
+                options.AddArgument("disable-gpu");
                 // options.AddArgument("--disable-dev-shm-usage");
                 options.AddArgument("--no-sandbox");
+                options.AddArgument("no-sandbox");
                 options.AddArgument("--headless");
+                options.AddArgument("headless");
                 // options.AddArgument("user-data-dir=W:\\Temp\\SeleniumProfile");
             }
 
-            options.AddArguments("force-device-scale-factor=2.0");
-            options.AddArguments("high-dpi-support=2.0");
+            // options.AddArguments("force-device-scale-factor=2.0");
+            // options.AddArguments("high-dpi-support=2.0");
 
             ChromeDriver chromeDriver = new ChromeDriver(driverService, options);
 

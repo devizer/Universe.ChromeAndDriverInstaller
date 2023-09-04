@@ -55,9 +55,9 @@ namespace LegacyParser
             File.WriteAllText("LegacyDriverNotes-final.json", JsonConvert.SerializeObject(rows, Formatting.Indented, new VersionConverter()));
 
             var prettyJson = rows.Select(x =>
-                $"\t{{ \"{x.DriverVersion}\": {{ \"from\": {x.MinChromeVersion}, \"to\": {x.MaxChromeVersion}, \"date\": \"{x.DriverDate.ToString("yyyy-MM-dd")}\" }} }}");
+                $"\t\"{x.DriverVersion}\": {{ \"from\": {x.MinChromeVersion}, \"to\": {x.MaxChromeVersion}, \"date\": \"{x.DriverDate.ToString("yyyy-MM-dd")}\" }}");
 
-            var prettyJson2 = $"[{Environment.NewLine}{string.Join($",{Environment.NewLine}", prettyJson)}{Environment.NewLine}]";
+            var prettyJson2 = $"{{{Environment.NewLine}{string.Join($",{Environment.NewLine}", prettyJson)}{Environment.NewLine}}}";
             File.WriteAllText("legacy-driver-versions.json", prettyJson2);
 
 

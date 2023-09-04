@@ -15,7 +15,7 @@ jobs:
   displayName: 'Grab Chromium'
   pool:
     vmImage: '$(IMAGE)'
-  timeoutInMinutes: 300
+  timeoutInMinutes: 366
   strategy:
     maxParallel: 4
     matrix:
