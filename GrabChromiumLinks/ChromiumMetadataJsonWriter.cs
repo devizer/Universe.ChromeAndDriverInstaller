@@ -10,7 +10,7 @@ namespace GrabChromiumLinks;
 
 public class ChromiumMetadataJsonWriter
 {
-    public static string Serialize(IEnumerable<SourceRow> allRows)
+    public static string Serialize(IEnumerable<SourceRow> allRows, bool onlyBrowserAndDriver = false)
     {
         JObject ret = new JObject();
 
@@ -39,8 +39,11 @@ public class ChromiumMetadataJsonWriter
                 if (links.Count > 1) throw new InvalidOperationException("links.Count > 1");
                 
                 // JObject jPlatformValue = JObject.FromObject(new {html = links.First().HtmlLink});
-                JObject jPlatformValue = JObject.FromObject(links.First().DownloadLinks.AsJObject());
+                var downloadLinks = links.First().DownloadLinks;
+                if (onlyBrowserAndDriver) downloadLinks = PatchForBrowserAndDriverOnly(downloadLinks);
+                JObject jPlatformValue = JObject.FromObject(downloadLinks.AsJObject());
                 jPlatforms.Add(platformByVersion.ToString(), jPlatformValue);
+                jPlatforms[platformByVersion.ToString()] = jPlatformValue;
             }
             var humanPlatformList = string.Join(", ", platformsByVersion.Select(x => x.Key.ToString()));
             ret.Add(version, jPlatforms);
@@ -52,9 +55,28 @@ public class ChromiumMetadataJsonWriter
         return JsonExtensions.Format(ret, false);
     }
 
+    private static List<DownloadLink> PatchForBrowserAndDriverOnly(List<DownloadLink> downloadLinks)
+    {
+        var ret = new List<DownloadLink>();
+        foreach (var link in downloadLinks)
+        {
+            var isChromeDriver = link.Name.IndexOf("chromedriver", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isBrowser = link.Name.IndexOf("chrome", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isSyms = link.Name.IndexOf("-syms", StringComparison.OrdinalIgnoreCase) >= 0;
+            var isAndroid = link.Name.IndexOf("-android", StringComparison.OrdinalIgnoreCase) >= 0;
+            if (!isSyms && !isAndroid)
+            {
+                if (isBrowser && !isChromeDriver)
+                    ret.Add(new DownloadLink() { Name = "chrome", Url = link.Url });
 
-        
-        
+                if (isChromeDriver)
+                    ret.Add(new DownloadLink() { Name = "chromedriver", Url = link.Url });
+            }
+        }
+        return ret;
+    }
+
+
     [JsonProperty("version")]
     public string RawVersion;
     [JsonProperty("platform")]

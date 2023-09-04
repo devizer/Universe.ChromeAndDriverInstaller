@@ -86,9 +86,14 @@ public class Program
         foreach (var htmlLinksParser in LinksParsers)
             htmlLinksParser.Dispose();
 
-        string resultJson = ChromiumMetadataJsonWriter.Serialize(allRows);
-        string fileName = $"chromium-and-drivers-full{(GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "")}.json";
-        File.WriteAllText(fileName, resultJson, new UTF8Encoding(false));
+        var utf8 = new UTF8Encoding(false);
+        var fileNameSuffix = (GetMaxParsedPages().HasValue ? $" (max {GetMaxParsedPages()} pages)" : "");
+        // Full (as is)
+        string resultJsonFull = ChromiumMetadataJsonWriter.Serialize(allRows);
+        File.WriteAllText($"chromium-and-drivers-full{fileNameSuffix}.json", resultJsonFull, utf8);
+        // Only Chrome and Driver (public)
+        string resultJson = ChromiumMetadataJsonWriter.Serialize(allRows, true);
+        File.WriteAllText($"chromium-and-drivers{fileNameSuffix}.json", resultJson, utf8);
     }
 
     static int? GetMaxParsedPages()
