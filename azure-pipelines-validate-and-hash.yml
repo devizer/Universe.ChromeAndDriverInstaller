@@ -33,6 +33,9 @@ jobs:
       'on Windows Server 2019':
         IMAGE: 'windows-2019'
         CHROMEDRIVER_DOWNLOAD_DIR: 'C:\Temp\GCD'
+      'on Windows Server 2022':
+        IMAGE: 'windows-2022'
+        CHROMEDRIVER_DOWNLOAD_DIR: 'C:\Temp\GCD'
 
   steps:
 
