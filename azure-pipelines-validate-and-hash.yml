@@ -15,7 +15,8 @@ jobs:
   displayName: 'Validate'
   pool:
     vmImage: '$(IMAGE)'
-  timeoutInMinutes: 366
+    timeoutInMinutes: 366
+    cancelTimeoutInMinutes: 1
   strategy:
     maxParallel: 5
     matrix:
