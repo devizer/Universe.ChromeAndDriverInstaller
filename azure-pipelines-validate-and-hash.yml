@@ -17,7 +17,7 @@ jobs:
     vmImage: '$(IMAGE)'
   timeoutInMinutes: 366
   strategy:
-    maxParallel: 4
+    maxParallel: 5
     matrix:
       'on Mac OS (Max 300)':
         IMAGE: 'macos-12'
