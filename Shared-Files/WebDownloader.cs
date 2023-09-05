@@ -63,9 +63,9 @@ namespace Universe.Shared
                 {
                     TryAndRetry.Exec(() => File.Delete(toFile));
                     if (i<retryCount)
-                        Console.WriteLine($"Warning. Retrying {i} of {retryCount} to download {url} as {toFile}");
+                        Console.WriteLine($"Warning. Retrying {i+1} of {retryCount} to download {url} as {toFile}");
 
-                    if (i == retryCount) throw;
+                    if (i == retryCount) throw new InvalidOperationException($"Unable to download {url} as {toFile}", e);
                 }
             }
         }
