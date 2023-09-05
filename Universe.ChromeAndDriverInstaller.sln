@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Universe.ChromeAndDriverIns
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegacyParser", "LegacyParser\LegacyParser.csproj", "{8329FDB0-4C36-4C18-BD5B-DC50B6BCC461}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrabChromiumLinks", "GrabChromiumLinks\GrabChromiumLinks.csproj", "{5F3E94E5-ABBF-45B9-A6A9-4D804C852294}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrabChromiumLinks", "GrabChromiumLinks\GrabChromiumLinks.csproj", "{5F3E94E5-ABBF-45B9-A6A9-4D804C852294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidateAndGrabHash", "ValidateAndGrabHash\ValidateAndGrabHash.csproj", "{954FAADA-5E7E-4676-A9F8-11B733EEB670}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5F3E94E5-ABBF-45B9-A6A9-4D804C852294}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F3E94E5-ABBF-45B9-A6A9-4D804C852294}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F3E94E5-ABBF-45B9-A6A9-4D804C852294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954FAADA-5E7E-4676-A9F8-11B733EEB670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954FAADA-5E7E-4676-A9F8-11B733EEB670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954FAADA-5E7E-4676-A9F8-11B733EEB670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954FAADA-5E7E-4676-A9F8-11B733EEB670}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

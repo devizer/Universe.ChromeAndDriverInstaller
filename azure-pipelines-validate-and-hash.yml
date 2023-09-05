@@ -1,0 +1,114 @@
+variables:
+  NUGET_VERSION: 0.42
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - '**'
+
+jobs:
+
+- job: Validate
+  displayName: 'Validate'
+  pool:
+    vmImage: '$(IMAGE)'
+  timeoutInMinutes: 366
+  strategy:
+    maxParallel: 4
+    matrix:
+      'on Mac OS (Max 300)':
+        IMAGE: 'macos-12'
+        MAX_PARSED_PAGES: '300'
+        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+
+      'on Mac OS':
+        IMAGE: 'macos-12'
+        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+      'on Ubuntu 22.04':
+        IMAGE: 'ubuntu-22.04'
+        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+      'on Windows Server 2019':
+        IMAGE: 'windows-2019'
+        CHROMEDRIVER_DOWNLOAD_DIR: "C:\Temp\GCD"
+
+  steps:
+
+  - pwsh: |
+      Install-Module Platform-Info -Force
+
+      Write-Host "CPU: $(Get-Cpu-Name), $([System.Environment]::ProcessorCount) Cores"
+      Write-Host "Platform: $(Get-Os-Platform)"
+      Write-Host "Memory $((Get-Memory-Info).Description)"
+    displayName: 'Bootstrap pwsh'
+
+  - bash: |
+       set -eu; set -o pipefail;
+       export RESET_FOLDERS_TO_RAID="/tmp/GCD" 
+       # export LOOP_DIRECT_IO="off"
+       mkdir -p "$RESET_FOLDERS_TO_RAID"; 
+       url=https://raw.githubusercontent.com/devizer/glist/master/Raid0-on-Azure-Pipelines-Linux.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash
+       df -h -T
+       sudo chown $USER /tmp/GCD
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Raid Compressed: /tmp/GCD'
+
+  - bash: |
+       if [[ "${AGENT_OS:-}" != Windows ]]; then df -h -T 2>nul || df -h; fi
+
+       export DOTNET_VERSIONS="5.0 6.0 7.0"
+       script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; test -s /usr/share/dotnet/dotnet && sudo ln -f -s /usr/share/dotnet/dotnet /usr/local/bin/dotnet; test -s /usr/local/share/dotnet/dotnet && sudo ln -f -s /usr/local/share/dotnet/dotnet /usr/local/bin/dotnet; 
+       dotnet --info
+    condition: succeededOrFailed()
+    displayName: 'Bootstrap .NET SDK'
+
+  - bash: |
+       cd ValidateAndGrabHash 
+       dotnet restore || dotnet restore --disable-parallel
+    condition: succeededOrFailed()
+    displayName: 'Restore'
+
+  - bash: |
+       set -eu; set -o pipefail
+       cd ValidateAndGrabHash 
+       dotnet run -f net6.0 | tee $SYSTEM_ARTIFACTSDIRECTORY/run.log
+       cp -f *.json $SYSTEM_ARTIFACTSDIRECTORY/ || true
+    condition: succeededOrFailed()
+    displayName: 'Grab'
+
+  - bash: |
+      set -eu; set -o pipefail
+      d=$PWD
+      pushd "$(System.ARTIFACTSDIRECTORY)"
+      7z a -mx=1 -ms=on -mqs=on "Source-$(Agent.JobName).7z" "$d"
+      popd
+    condition: succeededOrFailed()
+    displayName: 'Prepare Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    displayName: 'Publish Test Results'
+    inputs:
+      testRunner: VSTest
+      testResultsFiles: '**/*.trx'
+      testRunTitle: 'All the tests for $(Agent.JobName)'
+
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: cobertura
+      failIfCoverageEmpty: false # Optional      
+      summaryFileLocation: '**/coverage.cobertura.xml'
+
+  - bash: 'Show-System-Stat; sudo df -h -T;'
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Linux System Statistic'

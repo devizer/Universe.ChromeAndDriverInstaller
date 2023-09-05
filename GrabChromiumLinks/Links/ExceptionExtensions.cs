@@ -2,7 +2,6 @@
 
 public static class ExceptionExtensions
 {
-    // TODO: Does not support Microsoft SqlClient
     public static string GetLegacyExceptionDigest(this Exception exception)
     {
         List<string> ret = new List<string>();
