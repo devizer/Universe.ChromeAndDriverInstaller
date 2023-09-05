@@ -84,10 +84,9 @@ namespace Universe.Shared
                 wc.Proxy = System.Net.WebRequest.DefaultWebProxy;
                 // wc.DownloadFile(new Uri(url), toFile);
                 using (Stream net = wc.OpenRead(url))
-                using (FileStream fs = new FileStream(toFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                using (FileStream fs = new FileStream(toFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 64 * 1024))
                 {
                     net.CopyTo(fs);
-
                 }
             }
 #endif

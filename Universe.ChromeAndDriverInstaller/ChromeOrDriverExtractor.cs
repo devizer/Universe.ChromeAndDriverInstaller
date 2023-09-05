@@ -20,7 +20,7 @@ namespace Universe.ChromeAndDriverInstaller
             TryAndRetry.Exec(() => Directory.CreateDirectory(targetDir));
             // ZipFile Is not supported by Net 4.0
             // ZipFile.ExtractToDirectory(zipFile, targetDir);
-            using(FileStream fs = new FileStream(zipFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using(FileStream fs = new FileStream(zipFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 32 * 1024))
             using (ZipArchive za = new ZipArchive(fs, ZipArchiveMode.Read))
             {
                 foreach (var zipEntry in za.Entries)
@@ -32,7 +32,7 @@ namespace Universe.ChromeAndDriverInstaller
                     {
                         // not a folder
                         using (var entrySrc = zipEntry.Open())
-                        using (var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                        using (var localFile = new FileStream(localPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 32*1024))
                         {
                             entrySrc.CopyTo(localFile);
                         }
