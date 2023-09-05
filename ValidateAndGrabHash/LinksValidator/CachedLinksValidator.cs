@@ -65,7 +65,14 @@ namespace ValidateAndGrabHash.LinksValidator
             {
                 Console.WriteLine($"Local File: {localFile}");
                 TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(localFile)));
+                Stopwatch start1File = Stopwatch.StartNew();
                 new WebDownloader().DownloadFile(url, localFile, retryCount: 3);
+                var msec1File = start1File.ElapsedMilliseconds;
+                long size1File = File.Exists(localFile) ? new FileInfo(localFile).Length : 0;
+                if (msec1File > 0 && size1File > 0)
+                {
+                    Console.WriteLine($"Download speed for {size1File / 1024d:n0}K file: {size1File / 1024d / (msec1File / 1000d):n0} KB/s");
+                }
 
                 SHA1 sha1 = SHA1.Create();
                 byte[] hash;
