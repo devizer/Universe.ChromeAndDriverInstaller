@@ -43,14 +43,16 @@ namespace Universe.ChromeAndDriverInstaller
                 return default(T);
             }
         }
-        public static void Exec(Action action)
+        public static Exception Exec(Action action)
         {
             try
             {
                 action();
+                return null;
             }
-            catch
+            catch(Exception ex)
             {
+                return ex;
             }
         }
     }

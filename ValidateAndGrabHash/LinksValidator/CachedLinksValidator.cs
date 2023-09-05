@@ -100,7 +100,9 @@ namespace ValidateAndGrabHash.LinksValidator
             }
             finally
             {
-                TryAndRetry.Exec(() => File.Delete(localFile));
+                var delEx = TryAndRetry.Exec(() => File.Delete(localFile));
+                if (delEx != null)
+                    Console.WriteLine($"WARNING! Unable to delete '{localFile}': {delEx.GetLegacyExceptionDigest()}");
             }
 
             Cache[url] = ret;
