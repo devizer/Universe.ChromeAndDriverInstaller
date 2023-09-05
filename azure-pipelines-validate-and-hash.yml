@@ -76,7 +76,7 @@ jobs:
        dotnet run -f net6.0 | tee $SYSTEM_ARTIFACTSDIRECTORY/run.log
        cp -f *.json $SYSTEM_ARTIFACTSDIRECTORY/ || true
     condition: succeededOrFailed()
-    displayName: 'Grab'
+    displayName: 'Validate'
 
   - bash: |
       set -eu; set -o pipefail
