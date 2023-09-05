@@ -8,7 +8,7 @@ public static class ExceptionExtensions
         // while (ex != null)
         foreach (var ex in AsPlainExceptionList(exception))
         {
-            ret.Add("[" + ex.GetType().Name + "]" + ex.Message);
+            ret.Add("[" + ex.GetType().Name + "] " + ex.Message);
         }
 
         return string.Join(" → ", ret);

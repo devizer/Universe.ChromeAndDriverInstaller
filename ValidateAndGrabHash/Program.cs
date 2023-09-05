@@ -25,6 +25,8 @@ namespace ValidateAndGrabHash
                 resultsDictionary.TryGetValue(url, out var validationResult);
                 JObject newValue = JObject.FromObject(new {url = url});
                 if (validationResult?.SHA1 != null) newValue["sha1"] = validationResult?.SHA1;
+                if (!string.IsNullOrEmpty(validationResult?.ErrorInfo)) newValue["error"] = validationResult?.ErrorInfo;
+
                 link.Value = newValue;
             }
 
