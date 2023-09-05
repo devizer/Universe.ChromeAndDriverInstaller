@@ -96,6 +96,11 @@ namespace ValidateAndGrabHash.LinksValidator
                     SHA1 = null,
                     Url = url
                 };
+                Console.WriteLine($"Validation failed. {ret.ErrorInfo}");
+            }
+            finally
+            {
+                TryAndRetry.Exec(() => File.Delete(localFile));
             }
 
             Cache[url] = ret;
