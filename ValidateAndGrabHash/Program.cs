@@ -9,6 +9,7 @@ namespace ValidateAndGrabHash
     {
         static void Main(string[] args)
         {
+            SameLinkFinder.Process();
             var root = SourceChromiumLinksParser.ParseAsJObject();
             var links = SourceChromiumLinksParser.FindLinks(root).ToList();
 

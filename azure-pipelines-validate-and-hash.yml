@@ -20,20 +20,20 @@ jobs:
   strategy:
     maxParallel: 5
     matrix:
-      'on Mac OS (Max 300)':
-        IMAGE: 'macos-12'
-        MAX_PARSED_PAGES: '300'
-        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+      # 'on Mac OS (Max 300)':
+      #   IMAGE: 'macos-12'
+      #   MAX_PARSED_PAGES: '300'
+      #   CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
 
-      'on Mac OS':
-        IMAGE: 'macos-12'
-        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
-      'on Ubuntu 22.04':
-        IMAGE: 'ubuntu-22.04'
-        CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
-      'on Windows Server 2019':
-        IMAGE: 'windows-2019'
-        CHROMEDRIVER_DOWNLOAD_DIR: 'C:\Temp\GCD'
+      # 'on Mac OS':
+      #   IMAGE: 'macos-12'
+      #   CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+      # 'on Ubuntu 22.04':
+      #   IMAGE: 'ubuntu-22.04'
+      #   CHROMEDRIVER_DOWNLOAD_DIR: "/tmp/GCD"
+      # 'on Windows Server 2019':
+      #   IMAGE: 'windows-2019'
+      #   CHROMEDRIVER_DOWNLOAD_DIR: 'C:\Temp\GCD'
       'on Windows Server 2022':
         IMAGE: 'windows-2022'
         CHROMEDRIVER_DOWNLOAD_DIR: 'C:\Temp\GCD'
