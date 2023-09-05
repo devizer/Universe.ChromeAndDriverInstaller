@@ -9,11 +9,11 @@ using Stream = System.IO.Stream;
 
 namespace ValidateAndGrabHash.StaticMetadata
 {
-    internal class LinksParser
+    internal class SourceChromiumLinksParser
     {
         public static JObject ParseAsJObject()
         {
-            using(Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(LinksParser).Namespace + ".chromium-and-drivers.json"))
+            using(Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream(typeof(SourceChromiumLinksParser).Namespace + ".chromium-and-drivers.json"))
             using (StreamReader sr = new StreamReader(s))
             {
                 var jObject = JObject.Parse(sr.ReadToEnd());

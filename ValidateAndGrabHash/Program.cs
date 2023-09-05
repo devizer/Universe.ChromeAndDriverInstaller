@@ -1,4 +1,6 @@
-﻿using ValidateAndGrabHash.LinksValidator;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ValidateAndGrabHash.LinksValidator;
 using ValidateAndGrabHash.StaticMetadata;
 
 namespace ValidateAndGrabHash
@@ -17,7 +19,15 @@ namespace ValidateAndGrabHash
             Dictionary<string, ValidationResult> resultsDictionary = resultsList.ToDictionary(x => x.Url, x => x);
 
             // Replace JProperty by JObject with to properties: url and sha1
+            foreach (JProperty link in links)
+            {
+                var url = link.Value.ToString();
+                resultsDictionary.TryGetValue(url, out var validationResult);
+                JObject newValue = JObject.FromObject(new {url = url, sha1 = validationResult?.SHA1});
+                link.Value = newValue;
+            }
 
+            File.WriteAllText("chromium-and-drivers-with-hash.json", root.ToString(Formatting.Indented));
         }
     }
 }
