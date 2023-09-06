@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using Universe.ChromeAndDriverInstaller.StaticallyCached.LegacyChromeDriver;
 using Universe.NUnitTests;
 
 namespace Universe.ChromeAndDriverInstaller.Tests
@@ -119,7 +118,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         [Test]
         public void ShowAll()
         {
-            var entries = LegacyChromedriver2xParser.Entries;
+            var entries = LegacyChromedriver2xEntry.Entries;
             Console.WriteLine(string.Join(Environment.NewLine, entries.Select(x => x.ToString())));
 
         }
