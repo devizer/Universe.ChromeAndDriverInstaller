@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GrabChromiumLinks", "GrabCh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValidateAndGrabHash", "ValidateAndGrabHash\ValidateAndGrabHash.csproj", "{954FAADA-5E7E-4676-A9F8-11B733EEB670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NormalizeFinalJson", "NormalizeFinalJson\NormalizeFinalJson.csproj", "{E2292B99-9E2C-45FA-B484-7910D398E5D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NormalizeFinalJson", "NormalizeFinalJson\NormalizeFinalJson.csproj", "{E2292B99-9E2C-45FA-B484-7910D398E5D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildUtils", "BuildUtils", "{9E27BA9E-0068-4A15-AA4E-59DBA24FCF80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8329FDB0-4C36-4C18-BD5B-DC50B6BCC461} = {9E27BA9E-0068-4A15-AA4E-59DBA24FCF80}
+		{5F3E94E5-ABBF-45B9-A6A9-4D804C852294} = {9E27BA9E-0068-4A15-AA4E-59DBA24FCF80}
+		{E2292B99-9E2C-45FA-B484-7910D398E5D8} = {9E27BA9E-0068-4A15-AA4E-59DBA24FCF80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBA0851E-3E9E-47FE-9074-C3826B5FFE30}

@@ -31,7 +31,7 @@ namespace Universe.ChromeAndDriverInstaller
             {
                 var rawJson = EmbeddedResourcesHelper.ReadEmbeddedResource(fullName);
                 var entries = DownloadsMetadataParser.Parse(rawJson);
-                const int maxVersion = 116;
+                const int maxVersion = 116; // TODO: Move to file
                 ret.AddRange(entries.Where(x => x.Version.Major <= maxVersion));
             }
 
