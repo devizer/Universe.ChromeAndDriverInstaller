@@ -11,7 +11,7 @@
 
         public override string ToString()
         {
-            return $"[{(Milestone == 0 ? RawMilestone : Milestone.ToString())}], {Type} on {Platform} v{(Version?.Major > 0 ? Version.ToString() : RawVersion)}{(RawStatus == null ? "" : $":{RawStatus}")} '{(Uri == null ? Url : Uri.ToString())}' sha1={(SHA1 == null ? "null" : SHA1)}";
+            return $"[{(Milestone == 0 ? RawMilestone : Milestone.ToString())}], {(Type == ChromeOrDriverType.Chrome ? "Chromium" : Type.ToString())} on {Platform} v{(Version?.Major > 0 ? Version.ToString() : RawVersion)}{(RawStatus == null ? "" : $":{RawStatus}")} '{(Uri == null ? Url : Uri.ToString())}' sha1={(SHA1 == null ? "null" : SHA1)}";
         }
 
     }

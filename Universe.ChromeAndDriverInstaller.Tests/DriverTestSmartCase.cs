@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Threading;
 
 namespace Universe.ChromeAndDriverInstaller.Tests
 {
     public class DriverTestSmartCase
     {
-        public static DriverTestSmartCase CreatePreinstalledCase() => new DriverTestSmartCase() { UsePreinstalledChrome = true };
-        public static DriverTestSmartCase CreateStableCase() => new DriverTestSmartCase() { MajorVersionDownload = null };
-        public static DriverTestSmartCase CreateSpecificVersionCase(int majorVersion) => new DriverTestSmartCase() { MajorVersionDownload = majorVersion };
+        public static DriverTestSmartCase CreatePreinstalledCase() => new DriverTestSmartCase() { UsePreinstalledChrome = true }.Populate();
+        public static DriverTestSmartCase CreateStableCase() => new DriverTestSmartCase() { MajorVersionDownload = null }.Populate();
+        public static DriverTestSmartCase CreateSpecificVersionCase(int majorVersion) => new DriverTestSmartCase() { MajorVersionDownload = majorVersion }.Populate();
 
 
         private static Lazy<string> _StableVersion = new Lazy<string>(GetStableVersion, LazyThreadSafetyMode.ExecutionAndPublication);
@@ -16,7 +17,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
         private static Lazy<List<ChromeOrDriverEntry>> _Entries = new Lazy<List<ChromeOrDriverEntry>>(() =>
         {
-            return new SmartChromeAndDriverMetadataClient().Read();
+            return new SmartChromeAndDriverMetadataClient().Read().Normalize();
         }, LazyThreadSafetyMode.ExecutionAndPublication);
 
 
@@ -26,30 +27,34 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
         private string _AsString;
 
-        public ChromeOrDriverEntry ChromeEntry => throw new NotImplementedException();
-        public ChromeOrDriverEntry ChromeDriverEntry => throw new NotImplementedException();
+        private ChromeOrDriverEntry _ChromeMetadata;
+        public ChromeOrDriverEntry ChromeMetadata => _ChromeMetadata == null ? throw new VersionNotFoundException() : ChromeMetadata;
+
+        private ChromeOrDriverEntry _ChromeDriverMetadata;
+        public ChromeOrDriverEntry ChromeDriverMetadata => _ChromeDriverMetadata == null ? throw new VersionNotFoundException() : _ChromeDriverMetadata;
 
         public override string ToString()
         {
             return _AsString;
         }
 
-
-
-        private void Populate()
+        private DriverTestSmartCase Populate()
         {
-            if (_AsString != null) return;
+            if (_AsString != null) return this;
+            int? actualMajor = null;
             if (UsePreinstalledChrome)
             {
                 string preinstalledRawVersion = _PreinstalledVersion.Value;
                 if (preinstalledRawVersion != null)
                 {
                     _AsString = $"Preinstalled Chrome {preinstalledRawVersion}";
+                    actualMajor = new Version(preinstalledRawVersion).Major;
                 }
                 else
                 {
                     MajorVersionDownload = new Version(_StableVersion.Value).Major;
                     _AsString = $"Stable Version {_StableVersion.Value} (missing pre-installed chrome)";
+                    actualMajor = MajorVersionDownload;
                 }
             }
             else
@@ -57,19 +62,46 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 if (MajorVersionDownload.HasValue)
                 {
                     _AsString = $"Specific Chrome {_Entries.Value.FindByVersion(MajorVersionDownload.Value, ChromeOrDriverType.Chrome)}";
+                    actualMajor = MajorVersionDownload.Value;
                 }
                 else
                 {
                     int majorVersionDownload = new Version(_StableVersion.Value).Major;
+                    actualMajor = majorVersionDownload;
                     _AsString = $"Stable Chrome {_Entries.Value.FindByVersion(majorVersionDownload, ChromeOrDriverType.Chrome)}";
                 }
             }
+
+            if (actualMajor.HasValue)
+            {
+                _ChromeMetadata = _Entries.Value.FindByVersion(actualMajor.Value, ChromeOrDriverType.Chrome);
+                _ChromeDriverMetadata = _Entries.Value.FindByVersion(actualMajor.Value, ChromeOrDriverType.Driver);
+            }
+
+            return this;
         }
 
         static string GetStableVersion()
         {
             return new LastKnownGoodVersionsClient().ReadVersions()?.TryGetStableVersion().ToString();
         }
+    }
 
+    public class DriverTestSmartCaseSource
+    {
+        public static List<DriverTestSmartCase> Famous => new List<DriverTestSmartCase>()
+        {
+            DriverTestSmartCase.CreateStableCase(),
+            DriverTestSmartCase.CreatePreinstalledCase(),
+            DriverTestSmartCase.CreateSpecificVersionCase(109),
+            DriverTestSmartCase.CreateSpecificVersionCase(113),
+            DriverTestSmartCase.CreateSpecificVersionCase(93),
+            DriverTestSmartCase.CreateSpecificVersionCase(92),
+            DriverTestSmartCase.CreateSpecificVersionCase(86),
+            DriverTestSmartCase.CreateSpecificVersionCase(76),
+            DriverTestSmartCase.CreateSpecificVersionCase(71),
+            DriverTestSmartCase.CreateSpecificVersionCase(63),
+            DriverTestSmartCase.CreateSpecificVersionCase(49),
+        };
     }
 }

@@ -40,56 +40,67 @@ namespace Universe.ChromeAndDriverInstaller
                 var metadataClient = new SmartChromeAndDriverMetadataClient();
                 var entries = metadataClient.Read();
                 var metadataEntry = entries?.Normalize().FindByVersion(majorVersion.Value, type, platform);
-                if (metadataEntry != null)
-                {
-                    // cache key
-                    var uniqueName = $"{metadataEntry.Type}-{metadataEntry.RawVersion}-{metadataEntry.Platform}".ToLower();
 
-                    ChromeOrDriverResult cached;
-                    lock (SyncCache) Cache.TryGetValue(uniqueName, out cached);
-                    if (cached != null) return cached;
-
-                    string tempDir = GetTempFolder();
-                    var counter = Interlocked.Increment(ref Counter);
-                    tempDir = Path.Combine(tempDir, counter.ToString("0"));
-
-                    var zipFileName = Path.Combine(tempDir, "Zips", uniqueName + ".zip");
-                    var extractDir = Path.Combine(tempDir, uniqueName);
-
-                    var doneAnchorFile = Path.Combine(extractDir, uniqueName + ".done");
-                    string exeFullPath = null;
-                    if ((exeFullPath = TryReuse(doneAnchorFile)) == null) 
-                    {
-                        TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(zipFileName)));
-                        TryAndRetry.Exec(() => Directory.CreateDirectory(extractDir));
-
-                        DebugConsole.WriteLine($"Downloading {metadataEntry}");
-                        new WebDownloader().DownloadFile(metadataEntry.Url, zipFileName, retryCount: 3);
-                        DebugConsole.WriteLine($"Extracting '{extractDir}' for {metadataEntry}");
-                        exeFullPath = ChromeOrDriverExtractor.Extract(metadataEntry, zipFileName, extractDir);
-                        DebugConsole.WriteLine($"Executable is '{exeFullPath}' for {metadataEntry}");
-                        using (FileStream fs = new FileStream(doneAnchorFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                        using (StreamWriter wr = new StreamWriter(fs, new UTF8Encoding(false)))
-                        {
-                            wr.Write(exeFullPath);
-                        }
-                    }
-                    else {
-                        DebugConsole.WriteLine($"Reusing existing binary '{exeFullPath} for {metadataEntry}");
-                    }
-
-                    var ret = new ChromeOrDriverResult()
-                    {
-                        Metadata = metadataEntry,
-                        ArchiveFullPath = zipFileName,
-                        ExtractedFullPath = extractDir,
-                        ExecutableFullPath = exeFullPath,
-                    };
-
-                    lock(SyncCache) Cache[uniqueName] = ret;
-                    return ret;
-                }
+                return DownloadAndExtract(metadataEntry);
             }
+
+            return null;
+        }
+
+        public static ChromeOrDriverResult DownloadAndExtract(ChromeOrDriverEntry metadataEntry)
+        {
+
+            if (metadataEntry != null)
+            {
+                // cache key
+                var uniqueName = $"{metadataEntry.Type}-{metadataEntry.RawVersion}-{metadataEntry.Platform}".ToLower();
+
+                ChromeOrDriverResult cached;
+                lock (SyncCache) Cache.TryGetValue(uniqueName, out cached);
+                if (cached != null) return cached;
+
+                string tempDir = GetTempFolder();
+                var counter = Interlocked.Increment(ref Counter);
+                tempDir = Path.Combine(tempDir, counter.ToString("0"));
+
+                var zipFileName = Path.Combine(tempDir, "Zips", uniqueName + ".zip");
+                var extractDir = Path.Combine(tempDir, uniqueName);
+
+                var doneAnchorFile = Path.Combine(extractDir, uniqueName + ".done");
+                string exeFullPath = null;
+                if ((exeFullPath = TryReuse(doneAnchorFile)) == null)
+                {
+                    TryAndRetry.Exec(() => Directory.CreateDirectory(Path.GetDirectoryName(zipFileName)));
+                    TryAndRetry.Exec(() => Directory.CreateDirectory(extractDir));
+
+                    DebugConsole.WriteLine($"Downloading {metadataEntry}");
+                    new WebDownloader().DownloadFile(metadataEntry.Url, zipFileName, retryCount: 3);
+                    DebugConsole.WriteLine($"Extracting '{extractDir}' for {metadataEntry}");
+                    exeFullPath = ChromeOrDriverExtractor.Extract(metadataEntry, zipFileName, extractDir);
+                    DebugConsole.WriteLine($"Executable is '{exeFullPath}' for {metadataEntry}");
+                    using (FileStream fs = new FileStream(doneAnchorFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                    using (StreamWriter wr = new StreamWriter(fs, new UTF8Encoding(false)))
+                    {
+                        wr.Write(exeFullPath);
+                    }
+                }
+                else
+                {
+                    DebugConsole.WriteLine($"Reusing existing binary '{exeFullPath} for {metadataEntry}");
+                }
+
+                var ret = new ChromeOrDriverResult()
+                {
+                    Metadata = metadataEntry,
+                    ArchiveFullPath = zipFileName,
+                    ExtractedFullPath = extractDir,
+                    ExecutableFullPath = exeFullPath,
+                };
+
+                lock (SyncCache) Cache[uniqueName] = ret;
+                return ret;
+            }
+
 
             return null;
         }
