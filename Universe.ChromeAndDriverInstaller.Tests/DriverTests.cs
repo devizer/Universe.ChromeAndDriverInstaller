@@ -112,15 +112,4 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             return string.Join(" ", arr.Take(8));
         }
     }
-
-    public class LegacyChromedriver2xTests : NUnitTestsBase
-    {
-        [Test]
-        public void ShowAll()
-        {
-            var entries = LegacyChromedriver2xEntry.Entries;
-            Console.WriteLine(string.Join(Environment.NewLine, entries.Select(x => x.ToString())));
-
-        }
-    }
 }
