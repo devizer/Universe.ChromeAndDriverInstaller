@@ -24,7 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="StaticallyCached\LegacyChromeDriver\legacy-chromedriver-2x-versions.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\Shared-Files\WebDownloader.cs" Link="WebDownloader.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="StaticallyCached\LegacyChromeDriver\legacy-chromedriver-2x-versions.json" />
   </ItemGroup>
 
 

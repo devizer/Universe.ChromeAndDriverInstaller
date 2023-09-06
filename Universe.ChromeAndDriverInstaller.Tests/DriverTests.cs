@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Universe.ChromeAndDriverInstaller.StaticallyCached.LegacyChromeDriver;
 using Universe.NUnitTests;
 
 namespace Universe.ChromeAndDriverInstaller.Tests
@@ -110,6 +111,17 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         {
             if (arr == null) return "null";
             return string.Join(" ", arr.Take(8));
+        }
+    }
+
+    public class LegacyChromedriver2xTests : NUnitTestsBase
+    {
+        [Test]
+        public void ShowAll()
+        {
+            var entries = LegacyChromedriver2xParser.Entries;
+            Console.WriteLine(string.Join(Environment.NewLine, entries.Select(x => x.ToString())));
+
         }
     }
 }
