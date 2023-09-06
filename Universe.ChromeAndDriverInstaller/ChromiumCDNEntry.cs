@@ -3,8 +3,16 @@
     public class ChromiumCDNEntry : ChromeOrDriverEntry
     {
         // stable/beta/pre-release/archive
-        public string Status { get; set; }
+        public string RawStatus { get; set; }
         public string V8Version { get; set; }
         public string SHA1 { get; set; }
+
+        public ChromeOrDriveVersionStatus Status => DownloadsMetadataParser.ParseVersionStatus(RawStatus);
+
+        public override string ToString()
+        {
+            return $"[{(Milestone == 0 ? RawMilestone : Milestone.ToString())}], {Type} on {Platform} v{(Version?.Major > 0 ? Version.ToString() : RawVersion)}{(RawStatus == null ? "" : $":{RawStatus}")} '{(Uri == null ? Url : Uri.ToString())}' sha1={(SHA1 == null ? "null" : SHA1)}";
+        }
+
     }
 }

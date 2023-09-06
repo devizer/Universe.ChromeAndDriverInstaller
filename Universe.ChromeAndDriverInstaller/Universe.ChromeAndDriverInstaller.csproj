@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="..\Chromium\chromium-and-chromedriver-with-sha1-hash.json" Link="StaticallyCached\chromium-and-chromedriver-with-sha1-hash.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="StaticallyCached\LegacyChromeDriver\legacy-chromedriver-2x-versions.json" />
   </ItemGroup>
 

@@ -55,6 +55,14 @@ namespace Universe.ChromeAndDriverInstaller
             return ret;
         }
 
+        public static ChromeOrDriveVersionStatus ParseVersionStatus(string rawVersionStatus)
+        {
+            if ("pre-release".Equals(rawVersionStatus, StringComparison.OrdinalIgnoreCase)) return ChromeOrDriveVersionStatus.PreRelease;
+            if ("archive".Equals(rawVersionStatus, StringComparison.OrdinalIgnoreCase)) return ChromeOrDriveVersionStatus.Archive;
+            if ("stable".Equals(rawVersionStatus, StringComparison.OrdinalIgnoreCase)) return ChromeOrDriveVersionStatus.Stable;
+            if ("beta".Equals(rawVersionStatus, StringComparison.OrdinalIgnoreCase)) return ChromeOrDriveVersionStatus.Beta;
+            return ChromeOrDriveVersionStatus.Unknown;
+        }
         public static ChromeOrDriverType ParseChromeOrDriverType(string raw)
         {
             if ("chromedriver".Equals(raw, StringComparison.OrdinalIgnoreCase)) return ChromeOrDriverType.Driver;

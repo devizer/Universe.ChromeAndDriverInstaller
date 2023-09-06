@@ -31,15 +31,15 @@ namespace Universe.ChromeAndDriverInstaller
             {
                 var rawJson = EmbeddedResourcesHelper.ReadEmbeddedResource(fullName);
                 var entries = DownloadsMetadataParser.Parse(rawJson);
-                ret.AddRange(entries);
+                const int maxVersion = 116;
+                ret.AddRange(entries.Where(x => x.Version.Major <= maxVersion));
             }
 
             // chromedrive CDN at https://chromedriver.storage.googleapis.com/
             ret.AddRange(LegacyChromeDriverParser.Parse());
 
             // Google API CDN: https://www.googleapis.com/download/storage
-
-
+            ret.AddRange(ChromiumCDN.Entries.Where(x => x.Status != ChromeOrDriveVersionStatus.PreRelease && x.Status != ChromeOrDriveVersionStatus.Beta));
 
             return ret.Normalize();
         }
