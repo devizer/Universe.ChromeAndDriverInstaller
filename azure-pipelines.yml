@@ -70,8 +70,21 @@ jobs:
 
        cd Universe.ChromeAndDriverInstaller.Tests
        dotnet test -f net6.0 --filter "Name~DownloadSmarty"
-    condition: succeededOrFailed()
+    # condition: succeededOrFailed()
+    condition: False
     displayName: 'Download All Test'
+
+  - bash: |
+       export CHROMEDRIVER_DOWNLOAD_DIR=/tmp/GCD
+       if [[ "$(uname -s)" == "MINGW"* ]]; then CHROMEDRIVER_DOWNLOAD_DIR="C:\\Temp\\GCD"; mkdir -p C:\\Temp\\GCD; pushd C:\\Temp; compact /c GCD; popd; fi
+       echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
+
+       cd Universe.ChromeAndDriverInstaller.Tests
+       dotnet test -f net6.0 --filter "Name~DriverTestsMatrix"
+    condition: succeededOrFailed()
+    displayName: 'Driver Tests Matrix'
+
+    
 
   - bash: |
       set -eu; set -o pipefail

@@ -50,29 +50,29 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         [Test, Explicit]
         public void DownloadSmarty()
         {
-            var client = new SmartChromeAndDriverMetadataClient();
-            var entries = client.Read();
+            SmartChromeAndDriverMetadataClient client = new SmartChromeAndDriverMetadataClient();
+            List<ChromeOrDriverEntry> entries = client.Read();
             Console.WriteLine($"Entries: {entries.Count}");
             File.WriteAllLines("links.tmp", entries.Select(x => x.Uri.ToString()));
 
-            var dir = Env.ChromeDownloadDir;
+            string dir = Env.ChromeDownloadDir;
             if (string.IsNullOrEmpty(dir)) return;
-            var zipsDir = Path.Combine(dir, "Zips");
+            string zipsDir = Path.Combine(dir, "Zips");
             TryAndRetry.Exec(() => Directory.CreateDirectory(zipsDir));
 
 
             int n = 0;
             entries = entries.OrderByDescending(x => x.Type).ThenBy(x => x.Version).ToList();
             Stopwatch sw = Stopwatch.StartNew();
-            foreach (var entry in entries)
+            foreach (ChromeOrDriverEntry entry in entries)
             {
-                var link = entry.Uri.ToString();
+                string link = entry.Uri.ToString();
                 string localZipName = Path.Combine(
                     zipsDir,
                     entry.RawVersion + "-" + Path.GetFileName(link)
                 );
 
-                var localDirName = Path.Combine(
+                string localDirName = Path.Combine(
                     dir,
                     entry.RawVersion + "-" + Path.GetFileNameWithoutExtension(link)
                     );
