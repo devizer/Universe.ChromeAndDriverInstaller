@@ -96,8 +96,15 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 }
 
 
-                string titleLegacy = (string) chromeDriver.ExecuteScript("return document.title");
-                Console.WriteLine($"Got Document Legacy Title: '{titleLegacy}'");
+
+                if (localChrome.Metadata.Version.Major >= 76)
+                {
+                    var executeScriptResult = chromeDriver.ExecuteScript("return document.title");
+                    // Dictionary means error
+                    Console.WriteLine($"ExecuteScript() returns {executeScriptResult?.GetType()}, {executeScriptResult}");
+                    string titleLegacy = (string)executeScriptResult;
+                    Console.WriteLine($"Got Document Legacy Title: '{titleLegacy}'");
+                }
 
 
                 Console.WriteLine($"chromeDriver.Capabilities Type: '{chromeDriver.Capabilities.GetType()}'");
