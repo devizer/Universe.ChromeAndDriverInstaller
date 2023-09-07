@@ -69,7 +69,7 @@ jobs:
        echo "$CHROMEDRIVER_DOWNLOAD_DIR is [$CHROMEDRIVER_DOWNLOAD_DIR]"
 
        cd Universe.ChromeAndDriverInstaller.Tests
-       dotnet test -f net6.0 --filter "Name~DownloadSmarty"
+       dotnet test -f net6.0 --logger trx --filter "Name~DownloadSmarty"
     # condition: succeededOrFailed()
     condition: False
     displayName: 'Download All Test'
