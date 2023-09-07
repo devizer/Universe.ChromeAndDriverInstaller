@@ -9,6 +9,8 @@ namespace Universe.ChromeAndDriverInstaller
 {
     public static class LegacyChromeDriverParser
     {
+
+
         public static List<ChromeOrDriverEntry> Parse()
         {
             var ret = new List<ChromeOrDriverEntry>();

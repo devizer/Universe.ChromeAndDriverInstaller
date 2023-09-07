@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Universe.ChromeAndDriverInstaller
 {
@@ -67,9 +69,36 @@ namespace Universe.ChromeAndDriverInstaller
         public static ChromeOrDriverEntry FindByVersion(this IEnumerable<ChromeOrDriverEntry> all, int chromeMajor, ChromeOrDriverType type = ChromeOrDriverType.Driver, ChromeAndDriverPlatform platform = ChromeAndDriverPlatform.Unknown)
         {
             platform = ResolveCurrentPlatform(platform);
-            foreach (var entry in all)
+            /*
+            ChromeAndDriverPlatform[] platforms = new[] { platform };
+            if (platform == ChromeAndDriverPlatform.Win64)
+                platforms = new[] { ChromeAndDriverPlatform.Win64, ChromeAndDriverPlatform.Win32 };
+
+            foreach (var platformCandidate in platforms)
             {
-                if (entry.Version.Major == chromeMajor && entry.Type == type && entry.Platform == platform)
+                
+            }
+            */
+
+            if (chromeMajor == 49 && type ==ChromeOrDriverType.Driver && Debugger.IsAttached) Debugger.Break();
+
+            Func<ChromeOrDriverEntry, bool> isIt = entry => entry.Version.Major == chromeMajor;
+
+            if (type == ChromeOrDriverType.Driver && chromeMajor <= 73)
+            {
+                LegacyChromedriver2xEntry[] drivers2x = LegacyChromedriver2xClient.FindChromeDriverVersion(chromeMajor);
+                LegacyChromedriver2xEntry driver2x = drivers2x.FirstOrDefault();
+                if (driver2x == null)
+                {
+                    DebugConsole.WriteLine($"WARNING! Unknown ChromeDriver version for Chrome v{chromeMajor}");
+                    return null;
+                }
+                isIt = entry => entry.Version == driver2x.ChromeDriverVersion;
+            }
+
+            foreach (ChromeOrDriverEntry entry in all)
+            {
+                if (isIt(entry) && entry.Type == type && (entry.Platform == platform || (platform == ChromeAndDriverPlatform.Win64 /*&& type == ChromeOrDriverType.Driver*/ && entry.Platform == ChromeAndDriverPlatform.Win32) ))
                     return entry;
             }
 

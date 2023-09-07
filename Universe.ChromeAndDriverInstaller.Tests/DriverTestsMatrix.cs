@@ -75,11 +75,30 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             using (var chromeDriver = new ChromeDriver(driverService, options))
             {
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
-                chromeDriver.Manage().Window.Size = new Size(1400, 1000);
-                chromeDriver.Manage().Window.Size = new Size(1400, 6000);
+                if (localChrome.Metadata.Version.Major > 49)
+                {
+                    chromeDriver.Manage().Window.Size = new Size(1400, 1000);
+                    chromeDriver.Manage().Window.Size = new Size(1400, 6000);
+                }
+                else
+                {
+                    Console.WriteLine("WARNING! Window.Size is available for v63+");
+                }
 
-                var docTitle = chromeDriver.Title;
-                Console.WriteLine($"Got Document Title: '{docTitle}'");
+                if (localChrome.Metadata.Version.Major >= 76)
+                {
+                    string docTitle = chromeDriver.Title;
+                    Console.WriteLine($"Got Document Title: '{docTitle}'");
+                }
+                else
+                {
+                    Console.WriteLine("WARNING! Window.Size is available for v76+");
+                }
+
+
+                string titleLegacy = (string) chromeDriver.ExecuteScript("return document.title");
+                Console.WriteLine($"Got Document Legacy Title: '{titleLegacy}'");
+
 
                 Console.WriteLine($"chromeDriver.Capabilities Type: '{chromeDriver.Capabilities.GetType()}'");
                 Console.WriteLine(chromeDriver.Capabilities.GetCapability("PlatformName"));
@@ -87,16 +106,23 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
                 if (needScreenshot)
                 {
-                    var dir = Path.GetFullPath(Environment.CurrentDirectory);
-                    var fileName = Path.Combine(dir, "what-is-my-browser");
-                    Console.WriteLine($"Saving Screenshot as [{fileName}]");
-                    Screenshot screenshot = ((ITakesScreenshot)chromeDriver).GetScreenshot();
-                    var rawScreenshot = screenshot.AsByteArray;
-                    Console.WriteLine($"First {GetFirstEightBytes(rawScreenshot)}");
-                    File.WriteAllBytes(fileName + ".bin", rawScreenshot);
-                    // screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
-                    var fileNameSuffix = $"v{testCase.ChromeMetadata.Version.Major}";
-                    ScreenshotSmartSaver.SaveAsPng(screenshot, $"{fileName}-{fileNameSuffix}.png");
+                    if (localChrome.Metadata.Version.Major >= 76)
+                    {
+                        var dir = Path.GetFullPath(Environment.CurrentDirectory);
+                        var fileName = Path.Combine(dir, "what-is-my-browser");
+                        Console.WriteLine($"Saving Screenshot as [{fileName}]");
+                        Screenshot screenshot = ((ITakesScreenshot)chromeDriver).GetScreenshot();
+                        var rawScreenshot = screenshot.AsByteArray;
+                        Console.WriteLine($"First {GetFirstEightBytes(rawScreenshot)}");
+                        File.WriteAllBytes(fileName + ".bin", rawScreenshot);
+                        // screenshot.SaveAsFile(fileName + ".bmp", ScreenshotImageFormat.Bmp);
+                        var fileNameSuffix = $"v{testCase.ChromeMetadata.Version.Major}";
+                        ScreenshotSmartSaver.SaveAsPng(screenshot, $"{fileName}-{fileNameSuffix}.png");
+                    }
+                    else
+                    {
+                        Console.WriteLine("WARNING! Screenshots are available for v76+");
+                    }
                 }
             }
         }

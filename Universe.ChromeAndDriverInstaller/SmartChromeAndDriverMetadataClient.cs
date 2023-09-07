@@ -36,7 +36,27 @@ namespace Universe.ChromeAndDriverInstaller
             }
 
             // chromedrive CDN at https://chromedriver.storage.googleapis.com/
-            ret.AddRange(LegacyChromeDriverParser.Parse());
+            var allChromeDriverLegacyEntries = LegacyChromeDriverParser.Parse();
+            ret.AddRange(allChromeDriverLegacyEntries);
+
+            /*
+            // Drivers 2.x
+            foreach (LegacyChromedriver2xEntry driver2x in LegacyChromedriver2xClient.Entries)
+            {
+                for (int major = driver2x.MinChromeVersion; major <= driver2x.MaxChromeVersion; major++)
+                {
+                    var driverVersion = driver2x.ChromeDriverVersion;
+                    var tempDriverEntries = allChromeDriverLegacyEntries.Where(x => x.RawVersion == driverVersion.ToString()).ToList();
+                    foreach (var entry in tempDriverEntries)
+                    {
+                        ret.Add(new ChromeOrDriverEntry()
+                        {
+                            RawVersion = 
+                        });
+                    }
+                }
+            }
+            */
 
             // Google API CDN: https://www.googleapis.com/download/storage
             ret.AddRange(ChromiumCDN.Entries.Where(x => x.Status != ChromeOrDriveVersionStatus.PreRelease && x.Status != ChromeOrDriveVersionStatus.Beta));

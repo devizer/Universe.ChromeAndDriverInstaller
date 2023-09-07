@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Universe.ChromeAndDriverInstaller.Tests
@@ -41,6 +42,9 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         private DriverTestSmartCase Populate()
         {
             if (_AsString != null) return this;
+
+            if (MajorVersionDownload == 49 && Debugger.IsAttached) Debugger.Break();
+
             int? actualMajor = null;
             if (UsePreinstalledChrome)
             {
@@ -76,6 +80,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             if (actualMajor.HasValue)
             {
                 _ChromeMetadata = _Entries.Value.FindByVersion(actualMajor.Value, ChromeOrDriverType.Chrome);
+                // if (MajorVersionDownload == 71 && Debugger.IsAttached) Debugger.Break();
                 _ChromeDriverMetadata = _Entries.Value.FindByVersion(actualMajor.Value, ChromeOrDriverType.Driver);
             }
 
@@ -100,6 +105,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             DriverTestSmartCase.CreateSpecificVersionCase(92),
             DriverTestSmartCase.CreateSpecificVersionCase(86),
             DriverTestSmartCase.CreateSpecificVersionCase(76),
+            DriverTestSmartCase.CreateSpecificVersionCase(74),
             DriverTestSmartCase.CreateSpecificVersionCase(71),
             DriverTestSmartCase.CreateSpecificVersionCase(63),
             DriverTestSmartCase.CreateSpecificVersionCase(49),
