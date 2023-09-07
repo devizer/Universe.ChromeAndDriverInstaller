@@ -28,7 +28,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
         private string _AsString;
 
         private ChromeOrDriverEntry _ChromeMetadata;
-        public ChromeOrDriverEntry ChromeMetadata => _ChromeMetadata == null ? throw new VersionNotFoundException() : ChromeMetadata;
+        public ChromeOrDriverEntry ChromeMetadata => _ChromeMetadata == null ? throw new VersionNotFoundException() : _ChromeMetadata;
 
         private ChromeOrDriverEntry _ChromeDriverMetadata;
         public ChromeOrDriverEntry ChromeDriverMetadata => _ChromeDriverMetadata == null ? throw new VersionNotFoundException() : _ChromeDriverMetadata;
@@ -61,7 +61,8 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             {
                 if (MajorVersionDownload.HasValue)
                 {
-                    _AsString = $"Specific Chrome {_Entries.Value.FindByVersion(MajorVersionDownload.Value, ChromeOrDriverType.Chrome)}";
+                    var found = _Entries.Value.FindByVersion(MajorVersionDownload.Value, ChromeOrDriverType.Chrome);
+                    _AsString = $"Specific Chrome {(found == null ? $"Not Found v{MajorVersionDownload.Value}" : found.ToString())}";
                     actualMajor = MajorVersionDownload.Value;
                 }
                 else
