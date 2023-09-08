@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -32,10 +33,8 @@ namespace Universe.ChromeAndDriverInstaller.Tests
 
         public void OpenWhatIsMyBrowser(DriverTestSmartCase testCase, bool needScreenshot)
         {
-            Console.WriteLine($"Downloading and extracting driver");
             ChromeOrDriverResult localDriver = ChromeOrDriverFactory.DownloadAndExtract(testCase.ChromeDriverMetadata);
 
-            Console.WriteLine($"Downloading and extracting chrome");
             var localChrome = ChromeOrDriverFactory.DownloadAndExtract(testCase.ChromeMetadata);
 
             ChromeDriverService driverService = ChromeDriverService.CreateDefaultService(Path.GetDirectoryName(localDriver.ExecutableFullPath), Path.GetFileName(localDriver.ExecutableFullPath));
@@ -75,10 +74,12 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             using (var chromeDriver = new ChromeDriver(driverService, options))
             {
                 chromeDriver.Navigate().GoToUrl($"https://www.whatismybrowser.com/");
+                Console.WriteLine("SUCCESS: Navigate().GoToUrl()");
                 if (localChrome.Metadata.Version.Major > 49)
                 {
                     chromeDriver.Manage().Window.Size = new Size(1400, 1000);
                     chromeDriver.Manage().Window.Size = new Size(1400, 6000);
+                    Console.WriteLine("SUCCESS: Set Manage().Window.Size");
                 }
                 else
                 {
@@ -88,7 +89,7 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 if (localChrome.Metadata.Version.Major >= 76)
                 {
                     string docTitle = chromeDriver.Title;
-                    Console.WriteLine($"Got Document Title: '{docTitle}'");
+                    Console.WriteLine($"SUCCESS: Got Document Title '{docTitle}'");
                 }
                 else
                 {
@@ -101,9 +102,19 @@ namespace Universe.ChromeAndDriverInstaller.Tests
                 {
                     var executeScriptResult = chromeDriver.ExecuteScript("return document.title");
                     // Dictionary means error
-                    Console.WriteLine($"ExecuteScript() returns {executeScriptResult?.GetType()}, {executeScriptResult}");
+                    Console.WriteLine($"SUCCESS: ExecuteScript() returns {executeScriptResult?.GetType()}, {executeScriptResult}");
                     string titleLegacy = (string)executeScriptResult;
                     Console.WriteLine($"Got Document Legacy Title: '{titleLegacy}'");
+                }
+
+
+                if (localChrome.Metadata.Version.Major >= 49)
+                {
+                    ReadOnlyCollection<IWebElement> aLinks = chromeDriver.FindElements(By.TagName("a"));
+                    var texts = aLinks.Select(x => $"{x.Text}").ToList();
+                    Console.WriteLine($"SUCCESS: FindElements(By.TagName(\"a\"): {texts.Count}");
+                    var hrefs = aLinks.Select(x => $"{x.GetDomAttribute("href")}").ToList();
+                    Console.WriteLine($"SUCCESS: GetDomAttribute(\"href\") of each link: {hrefs.Count}");
                 }
 
 
@@ -142,4 +153,6 @@ namespace Universe.ChromeAndDriverInstaller.Tests
             return string.Join(" ", arr.Take(8));
         }
     }
+
+
 }
